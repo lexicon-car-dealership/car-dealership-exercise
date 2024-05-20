@@ -26,6 +26,36 @@ SECRET_KEY = 'django-insecure-^sctj=x@7==-q9v88(m&y0y=ox*wlc$nli1uz+bv-1z_q$@p(0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': Path(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 ALLOWED_HOSTS = []
 
 
@@ -38,7 +68,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'compressor'
+    'compressor',
+    'cars',
+    'authentication'
 ]
 
 MIDDLEWARE = [
@@ -124,8 +156,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-COMPRESS_ROOT = Path(BASE_DIR,'static')
+COMPRESS_ROOT = Path(BASE_DIR, 'static')
 
 COMPRESS_ENABLED = True
 
 STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = Path(BASE_DIR, 'media')
