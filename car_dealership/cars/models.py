@@ -6,10 +6,16 @@ class Manufacturer(models.Model):
     country = models.CharField(max_length=255)
     established_date = models.DateField()
 
-
     def __str__(self):
         return self.name
 
+class BrandModel(models.Model):
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    year = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.manufacturer.name} {self.name} ({self.year})"
 
 class Car(models.Model):
     PETROL_CHOICES = [
@@ -35,8 +41,7 @@ class Car(models.Model):
         ('Automatic', 'Automatic'),
     ]
 
-    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
-    model_name = models.CharField(max_length=255)
+    model_name = models.ForeignKey(BrandModel, on_delete=models.CASCADE)
     year = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
