@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main>
-  <p class="bg-slate-600 text-green-400 p-5">test</p>
-</main>
+  <h1 class="font-semibold">Used cars for sale</h1>
+  <p class="font-semibold bg-slate-600 text-green-400 p-5">
+    Discover a wide selection of used cars from various brands available for purchase, either through auction or at a fixed price. While many of these cars are in excellent condition, some may require minor repairs. Each vehicle has been thoroughly tested, with the results detailed in the respective advertisement.
+  </p>
+  {% for i in list %}
+  {% endfor %}
 {% endblock %}
