@@ -11,6 +11,17 @@
     <title>{% block title %}Your Website{% endblock %}</title>
   </head>
   <body>
-    {% block content %} {% endblock %}
+    <header class="flex">
+      <input type="text" placeholder="Search..">
+      <nav>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Login</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      {% block content %} {% endblock %}
+    </main>
   </body>
 </html>
