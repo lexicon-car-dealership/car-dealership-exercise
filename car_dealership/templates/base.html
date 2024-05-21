@@ -8,7 +8,7 @@
     {% compress css %}
     <link rel="stylesheet" href="{% static 'src/output.css' %}" />
     {% endcompress %}
-    <title>Document</title>
+    <title>{% block title %}Your Website{% endblock %}</title>
   </head>
   <body>
     {% block content %} {% endblock %}
