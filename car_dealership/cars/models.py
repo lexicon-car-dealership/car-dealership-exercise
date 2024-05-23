@@ -9,6 +9,7 @@ class Manufacturer(models.Model):
     def __str__(self):
         return self.name
 
+
 class BrandModel(models.Model):
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -16,6 +17,7 @@ class BrandModel(models.Model):
 
     def __str__(self):
         return f"{self.manufacturer.name} {self.name} ({self.year})"
+
 
 class Car(models.Model):
     PETROL_CHOICES = [
@@ -52,8 +54,7 @@ class Car(models.Model):
         max_length=12, choices=CAR_TYPE_CHOICES, default='Sedan')
     gear_type = models.CharField(
         max_length=10, choices=GEAR_CHOICES, default='Manual')
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.manufacturer.name} {self.model_name} ({self.year})"
-
-
+        return f"{self.model_name} ({self.year})"
