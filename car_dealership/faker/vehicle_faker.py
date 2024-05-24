@@ -14,9 +14,7 @@ class VehicleProvider(BaseProvider):
     >>> from vehicle_faker import VehicleProvider
     >>> fake = Faker()
     >>> fake.add_provider(VehicleProvider)
-    
-
-    
+        
     vehicle_object(self):        
         Returns a random vehicle dict example:
         {"Year": 2008, "Make": "Jeep", "Model": "Wrangler", "Category": "SUV"}
@@ -42,12 +40,10 @@ class VehicleProvider(BaseProvider):
         Returns str: Year 
         example: 1999
         
-
     def vehicle_model(self):
         Returns str: Model 
         example: Prius
         
-
     def vehicle_category(self):
         Returns str: Category 
         example: SUV
@@ -55,9 +51,6 @@ class VehicleProvider(BaseProvider):
     def vehicle_generated_vin(self):
         Returns str: VIN
         example: 'RT3GZYSKXXNDZ9J97'
-        
-    
-
     """
    
 
