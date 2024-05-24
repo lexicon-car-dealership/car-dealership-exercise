@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from .forms import EditProfileForm
 from django.contrib.auth.forms import UserChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
@@ -7,6 +8,7 @@ from .forms import RegisterForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from cars.views import index
 
 
 def register(request):
@@ -15,7 +17,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
+            return redirect('index')
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
@@ -30,7 +32,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect('index')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -59,3 +61,9 @@ def profile_view(request, profile_id=None):
             form = EditProfileForm(instance=user, user=user)
 
     return render(request, 'profile.html', {'form': form, 'user': user, 'current_user': request.user})
+
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('index')
