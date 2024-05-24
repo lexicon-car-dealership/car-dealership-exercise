@@ -11,7 +11,26 @@ def get_car_by_id(request, car_id):
 
 
 def get_most_recent_paginated(request):
-    cars = models.Car.objects.all()
+    brandFilter = request.GET.get('brand', None)
+    modelFilter = request.GET.get('model', None)
+    fuelFilter = request.GET.get('fuel', None)
+    yearFilter = request.GET.get('year', None)
+    minPriceFilter = request.GET.get('minPrice', None)
+    maxPriceFilter = request.GET.get('maxPrice', None)
+    filters = {}
+    if brandFilter:
+        filters['model_name__manufacturer__name__iexact'] = brandFilter
+    if modelFilter:
+        filters['model_name__name__iexact'] = modelFilter
+    if fuelFilter:
+        filters['petrol_type'] = fuelFilter
+    if yearFilter:
+        filters['year'] = yearFilter
+    if minPriceFilter:
+        filters['price__gte'] = minPriceFilter
+    if maxPriceFilter:
+        filters['price__lte'] = maxPriceFilter
+    cars = models.Car.objects.filter(**filters)
     cars.order_by('created_at')
     paginator = Paginator(cars, 10)
     page = request.GET.get('page', 1)
