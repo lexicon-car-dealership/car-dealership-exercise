@@ -2,8 +2,10 @@ from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from . import models
 
+
 def index(request):
     return render(request, 'index.html')
+
 
 def get_car_by_id(request, car_id):
     car = get_object_or_404(models.Car, pk=car_id)
@@ -41,5 +43,4 @@ def get_most_recent_paginated(request):
     except EmptyPage:
         cars_page = paginator.page(paginator.num_pages)
 
-    return HttpResponse(cars_page)
-
+    return render(request, 'index.html', {'cars': cars_page})
