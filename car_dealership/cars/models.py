@@ -1,4 +1,5 @@
 from django.db import models
+import locale
 
 
 class Manufacturer(models.Model):
@@ -55,6 +56,10 @@ class Car(models.Model):
     gear_type = models.CharField(
         max_length=10, choices=GEAR_CHOICES, default='Manual')
     created_at = models.DateField(auto_now_add=True)
+
+    def get_price(self):
+        locale.setlocale(locale.LC_ALL, 'sv_SE.UTF-8')
+        return f'{locale.currency(self.price, grouping=True)}'
 
     def __str__(self):
         return f"{self.model_name} ({self.year})"
