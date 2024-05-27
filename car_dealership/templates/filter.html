@@ -1,0 +1,72 @@
+<div class="search-container">
+  <form
+    id="filter_form"
+    method="get"
+    action="{% url 'index' %}"
+    class="d-flex"
+  >
+    <div class="input-group">
+      <input
+        id="filter_form_search"
+        name="search"
+        class="form-control rounded"
+        type="search"
+        placeholder="Search"
+        value="{{request.GET.search}}"
+        aria-label="Search"
+      />
+      <button
+        type="submit"
+        class="input-group-text bg-white border-0"
+      >
+        <i class="fas fa-search"></i>
+      </button>
+      <div>
+        <select name="brand" id="brand_select">
+          <option value="">Select Brand</option>
+          {% for brand in brands %}
+          <option value="{{ brand }}" {% if request.GET.brand == brand %}selected{% endif %}>{{ brand }}</option>
+          {% endfor %}
+        </select>
+        <select name="model" id="model_select" {% if not request.GET.brand %}disabled{% endif %}>
+          {% if request.GET.brand %}
+            {% for model in models %}
+              <option value="{{ model }}" {% if request.GET.model == model %}selected{% endif %}>{{ model }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+        <select name="fuel" id="fuel_select">
+          <option value="">Select engine type</option>
+          <option value="Petrol" {% if request.GET.fuel == 'Petrol' %}selected{% endif %}>Petrol</option>
+          <option value="Diesel" {% if request.GET.fuel == 'Diesel' %}selected{% endif %}>Diesel</option>
+          <option value="Electric" {% if request.GET.fuel == 'Electric' %}selected{% endif %}>Electric</option>
+          <option value="Hybrid" {% if request.GET.fuel == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+        </select>
+        <label for="filter_form_year">Year</label>
+        <input
+          type="text"
+          pattern="\d{4}"
+          name="year"
+          id="filter_form_year"
+          value="{{ request.GET.year }}"
+        />
+        <label for="filter_form_minPrice">Min price Range</label>
+        <input
+          type="text"
+          pattern="/d+"
+          name="minPrice"
+          id="filter_form_minPrice"
+          value="{{ request.GET.minPrice }}"
+        />
+        <label for="filter_form_maxPrice">Max price Range</label>
+        <input
+          type="text"
+          pattern="/d+"
+          name="maxPrice"
+          id="filter_form_maxPrice"
+          value="{{ request.GET.maxPrice }}"
+        />
+      </div>
+    </div>
+  </form>
+</div>
