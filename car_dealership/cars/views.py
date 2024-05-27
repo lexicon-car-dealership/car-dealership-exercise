@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from . import models
@@ -33,7 +34,7 @@ def get_most_recent_paginated(request):
     if maxPriceFilter:
         filters['price__lte'] = maxPriceFilter
     cars = models.Car.objects.filter(**filters).order_by('created_at')
-    paginator = Paginator(cars, 10)
+    paginator = Paginator(cars, 3)
     page = request.GET.get('page', 1)
     try:
         cars_page = paginator.page(page)
@@ -42,4 +43,5 @@ def get_most_recent_paginated(request):
     except EmptyPage:
         cars_page = paginator.page(paginator.num_pages)
 
-    return render(request, 'index.html', {'cars': cars_page})
+    params = request.GET.copy()
+    return render(request, 'index.html', {'cars': cars_page, 'page_obj': cars_page, 'params': params})
