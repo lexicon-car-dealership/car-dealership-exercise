@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from . import models
@@ -42,4 +43,5 @@ def get_most_recent_paginated(request):
     except EmptyPage:
         cars_page = paginator.page(paginator.num_pages)
 
-    return render(request, 'index.html', {'cars': cars_page})
+    params = request.GET.copy()
+    return render(request, 'index.html', {'cars': cars_page, 'page_obj': cars_page, 'params': params})
