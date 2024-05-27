@@ -57,7 +57,8 @@ def get_most_recent_paginated(request):
     unique_brands = models.Car.objects.values_list(
         'model_name__manufacturer__name', flat=True).distinct()
 
-    return render(request, 'index.html', {'cars': cars_page, 'brands': unique_brands})
+    params = request.GET.copy()
+    return render(request, 'index.html', {'cars': cars_page, 'brands': unique_brands, 'page_obj': cars_page, 'params': params})
 
 
 def get_models(request):
