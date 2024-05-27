@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
+
 from . import models
 
 
@@ -20,6 +22,8 @@ def get_most_recent_paginated(request):
     yearFilter = request.GET.get('year', None)
     minPriceFilter = request.GET.get('minPrice', None)
     maxPriceFilter = request.GET.get('maxPrice', None)
+    search_query = request.GET.get('search', None)
+
     filters = {}
     if brandFilter:
         filters['model_name__manufacturer__name__iexact'] = brandFilter
@@ -33,7 +37,14 @@ def get_most_recent_paginated(request):
         filters['price__gte'] = minPriceFilter
     if maxPriceFilter:
         filters['price__lte'] = maxPriceFilter
-    cars = models.Car.objects.filter(**filters).order_by('created_at')
+    cars = models.Car.objects.filter(**filters)
+    if search_query:
+        cars = cars.filter(
+            Q(model_name__name__icontains=search_query) |
+            Q(model_name__manufacturer__name__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+    cars = cars.order_by('created_at')
     paginator = Paginator(cars, 10)
     page = request.GET.get('page', 1)
     try:
@@ -43,5 +54,19 @@ def get_most_recent_paginated(request):
     except EmptyPage:
         cars_page = paginator.page(paginator.num_pages)
 
+    unique_brands = models.Car.objects.values_list(
+        'model_name__manufacturer__name', flat=True).distinct()
+    models_list = []
+    if brandFilter:
+        models_list = models.Car.objects.filter(model_name__manufacturer__name=brandFilter).values_list(
+            'model_name__name', flat=True).distinct()
+
     params = request.GET.copy()
-    return render(request, 'index.html', {'cars': cars_page, 'page_obj': cars_page, 'params': params})
+    return render(request, 'index.html', {'cars': cars_page, 'brands': unique_brands, 'models': models_list, 'page_obj': cars_page, 'params': params})
+
+
+def get_models(request):
+    brand = request.GET.get('brand')
+    out = models.Car.objects.filter(model_name__manufacturer__name=brand).values_list(
+        'model_name__name', flat=True).distinct()
+    return JsonResponse({'models': list(out)})
