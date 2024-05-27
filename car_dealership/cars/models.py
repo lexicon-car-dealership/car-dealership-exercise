@@ -4,8 +4,6 @@ import locale
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
-    established_date = models.DateField()
 
     def __str__(self):
         return self.name
@@ -14,10 +12,9 @@ class Manufacturer(models.Model):
 class BrandModel(models.Model):
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    year = models.IntegerField()
 
     def __str__(self):
-        return f"{self.manufacturer.name} {self.name} ({self.year})"
+        return f"{self.manufacturer.name} {self.name}"
 
 
 class Car(models.Model):
@@ -48,7 +45,6 @@ class Car(models.Model):
     year = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    image = models.ImageField(upload_to='car_images/', blank=True, null=True)
     petrol_type = models.CharField(
         max_length=10, choices=PETROL_CHOICES, default='Petrol')
     car_type = models.CharField(
@@ -63,3 +59,8 @@ class Car(models.Model):
 
     def __str__(self):
         return f"{self.model_name} ({self.year})"
+
+
+class CarImages(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='car_images/', blank=True, null=True)
