@@ -1,7 +1,9 @@
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render, HttpResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from .forms import ManufacturerForm, BrandModelForm, CarForm, CarImagesForm
+from django.contrib import messages
 
 from . import models
 
@@ -11,8 +13,11 @@ def index(request):
 
 
 def get_car_by_id(request, car_id):
-    car = get_object_or_404(models.Car, pk=car_id)
-    return HttpResponse(car)
+    car = get_object_or_404(
+        models.Car.objects.prefetch_related('carimages_set'), id=car_id)
+    car_images = car.carimages_set.all()
+    return render(request, 'car_detail.html', {'car': car, 'car_images': car_images})
+
 
 
 def get_most_recent_paginated(request):
@@ -64,9 +69,41 @@ def get_most_recent_paginated(request):
     params = request.GET.copy()
     return render(request, 'index.html', {'cars': cars_page, 'brands': unique_brands, 'models': models_list, 'page_obj': cars_page, 'params': params})
 
+def admin_forms(request, form_type):
+    form_map = {
+        'manufacturer': ManufacturerForm,
+        'brandmodel': BrandModelForm,
+        'car': CarForm,
+        'carimages': CarImagesForm,
+    }
 
-def get_models(request):
-    brand = request.GET.get('brand')
-    out = models.Car.objects.filter(model_name__manufacturer__name=brand).values_list(
-        'model_name__name', flat=True).distinct()
-    return JsonResponse({'models': list(out)})
+    if request.method == 'POST':
+        if form_type == 'carimages':
+            form = CarImagesForm(request.POST, request.FILES)
+            if form.is_valid():
+                car = form.cleaned_data['car']
+                images = form.cleaned_data['image']
+                for image in images:
+                    models.CarImages.objects.create(car=car, image=image)
+                messages.success(
+                    request, 'Car images uploaded successfully.')
+                return redirect('index')
+            else:
+                print(form.errors)
+                messages.error(
+                    request, 'Form is not valid. Please check the fields.')
+        else:
+            form = form_map[form_type](request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, f'{form_type.capitalize()} saved successfully.')
+                return redirect('index')
+            else:
+                print(form.errors)
+                messages.error(
+                    request, 'Form is not valid. Please check the fields.')
+    else:
+        form = form_map[form_type]()
+
+    return render(request, 'forms/admin.html', {'form': form})
