@@ -34,7 +34,7 @@ def get_most_recent_paginated(request):
     if maxPriceFilter:
         filters['price__lte'] = maxPriceFilter
     cars = models.Car.objects.filter(**filters).order_by('created_at')
-    paginator = Paginator(cars, 3)
+    paginator = Paginator(cars, 10)
     page = request.GET.get('page', 1)
     try:
         cars_page = paginator.page(page)
