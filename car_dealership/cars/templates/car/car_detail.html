@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container mt-5">
     {% if user.is_superuser %}
-        <a class="button button-primary" href="{% url 'edit_car' car.id %}">Edit</a>
+        <a class="btn btn-primary mb-3" href="{% url 'edit_car' car.id %}">Edit</a>
     {% endif %}
     <div class="row">
         <div class="col-md-8 offset-md-2">
@@ -27,6 +27,13 @@
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
+                </div>
+                <div class="row mt-3">
+                    {% for image in car_images %}
+                    <div class="col-3">
+                        <img src="{{ image.image.url }}" class="img-thumbnail" data-bs-target="#carCarousel" data-bs-slide-to="{{ forloop.counter0 }}" alt="Thumbnail">
+                    </div>
+                    {% endfor %}
                 </div>
                 {% else %}
                 <p>No images available for this car.</p>
