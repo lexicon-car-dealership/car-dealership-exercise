@@ -39,3 +39,10 @@ class CarImagesForm(forms.ModelForm):
     class Meta:
         model = CarImages
         fields = ['car', 'image']
+
+    def __init__(self, *args, **kwargs):
+        car = kwargs.pop('car', None)
+        super().__init__(*args, **kwargs)
+        if car:
+            self.fields['car'].initial = car
+            self.fields['car'].widget = forms.HiddenInput()
