@@ -1,8 +1,8 @@
-from django.http import JsonResponse
+import os
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-from .forms import ManufacturerForm, BrandModelForm, CarForm, CarImagesForm
+from .forms import CarWithImagesForm, ManufacturerForm, BrandModelForm, CarForm, CarImagesForm
 from django.contrib import messages
 
 from . import models
@@ -112,53 +112,60 @@ def admin_forms(request, form_type):
 def edit_car(request, car_id):
     car = get_object_or_404(models.Car, id=car_id)
     if request.method == 'POST':
-        print(car)
-        car_form = CarForm(request.POST, instance=car)
-        car_images_form = CarImagesForm(request.POST, request.FILES)
+        car_form = CarWithImagesForm(request.POST, request.FILES, instance=car)
 
-        if car_form.is_valid() and car_images_form.is_valid():
-            car_form.save()
-            car_images_form.save()
-            
-            images = request.FILES.getlist('image')
+        if car_form.is_valid():
+            car = car_form.save()
+
+            images = request.FILES.getlist('images')
             for image in images:
                 models.CarImages.objects.create(car=car, image=image)
 
             messages.success(request, 'Car details updated successfully.')
-            return redirect('car_detail', car_id=car.id)
+            return redirect('car', car_id=car.id)
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
-        car_form = CarForm(instance=car)
-        car_images_form = CarImagesForm(car=car)
+        car_form = CarWithImagesForm(instance=car)
 
     car_images = car.carimages_set.all()
     return render(request, 'car/edit_car.html', {
         'car_form': car_form,
-        'car_images_form': car_images_form,
         'car_images': car_images,
         'car': car
     })
 
-import os 
-
 
 def delete_car_image(request, image_id):
     image = get_object_or_404(models.CarImages, id=image_id)
-    car_id = image.car.id
+    car = image.car
+    car_id = car.id
+    image_path = image.image.path
+
     if request.method == 'POST':
-        # Store the image path to delete after the database deletion
-        image_path = image.image.path
         image.delete()
 
-        # Check if the file exists and delete it
+        # Delete the image file
         if os.path.isfile(image_path):
             try:
                 os.remove(image_path)
-                messages.success(request, 'Image deleted successfully.')
             except Exception as e:
                 messages.error(request, f'Error deleting image file: {e}')
+                return redirect('edit_car', car_id=car_id)
+
+        # Check if there are any remaining images for the car
+        remaining_images = models.CarImages.objects.filter(car=car).exists()
+
+        # If no images are left, remove the directory
+        if not remaining_images:
+            car_image_directory = os.path.dirname(image_path)
+            try:
+                os.rmdir(car_image_directory)
+                messages.success(
+                    request, 'Image and directory deleted successfully.')
+            except Exception as e:
+                messages.error(request, f'Error deleting directory: {e}')
         else:
-            messages.error(request, 'Image file not found.')
+            messages.success(request, 'Image deleted successfully.')
 
     return redirect('edit_car', car_id=car_id)
