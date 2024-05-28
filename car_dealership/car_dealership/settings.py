@@ -163,3 +163,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(BASE_DIR, 'media')
+
+# For development only
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("image/svg+xml", ".svg", True)
