@@ -16,7 +16,7 @@ def get_car_by_id(request, car_id):
     car = get_object_or_404(
         models.Car.objects.prefetch_related('carimages_set'), id=car_id)
     car_images = car.carimages_set.all()
-    return render(request, 'car_detail.html', {'car': car, 'car_images': car_images})
+    return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images})
 
 
 
