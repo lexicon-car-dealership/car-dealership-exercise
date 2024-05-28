@@ -1,8 +1,10 @@
+from .models import Manufacturer, BrandModel, Car, CarImages
+from .forms import CarWithImagesForm, ManufacturerForm, BrandModelForm, CarForm, CarImagesForm, AddCarForm
+from django.shortcuts import render, redirect, get_object_or_404
 import os
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-from .forms import CarWithImagesForm, ManufacturerForm, BrandModelForm, CarForm, CarImagesForm
 from django.contrib import messages
 
 from . import models
@@ -145,6 +147,42 @@ def edit_car(request, car_id):
         'car_images': car_images,
         'car': car
     })
+
+
+def add_car(request):
+    if request.method == 'POST':
+        form = AddCarForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            manufacturer_name = form.cleaned_data['manufacturer_name']
+            brand_model_name = form.cleaned_data['brand_model_name']
+            images = request.FILES.getlist('images')
+
+            # Handle Manufacturer
+            manufacturer, created = Manufacturer.objects.get_or_create(
+                name=manufacturer_name)
+
+            # Handle BrandModel
+            brand_model, created = BrandModel.objects.get_or_create(
+                name=brand_model_name, manufacturer=manufacturer)
+
+            # Handle Car
+            car = form.save(commit=False)
+            car.model_name = brand_model
+            car.save()
+
+            # Handle Images
+            for image in images:
+                CarImages.objects.create(car=car, image=image)
+
+            messages.success(request, 'Car added successfully.')
+            return redirect('car', car_id=car.id)
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = AddCarForm()
+
+    return render(request, 'car/add_car.html', {'form': form})
 
 
 def delete_car_image(request, image_id):
