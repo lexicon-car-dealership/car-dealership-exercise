@@ -65,6 +65,17 @@ class Car(models.Model):
 def car_images_upload_to(instance, filename):
     return os.path.join('car_images', str(instance.car.id), filename)
 
+
 class CarImages(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=car_images_upload_to)
+    featured = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.featured:
+            CarImages.objects.filter(
+                car=self.car, featured=True).update(featured=False)
+        super(CarImages, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.car.model_name.name} | image | {self.featured}'

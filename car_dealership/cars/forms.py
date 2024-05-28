@@ -38,11 +38,11 @@ class CarForm(forms.ModelForm):
 
 
 class CarImagesForm(forms.ModelForm):
-    image = MultipleFileField()
+    image = MultipleFileField(required=False)
 
     class Meta:
         model = CarImages
-        fields = ['car', 'image']
+        fields = ['car', 'image', 'featured']
 
     def __init__(self, *args, **kwargs):
         car = kwargs.pop('car', None)
@@ -51,7 +51,23 @@ class CarImagesForm(forms.ModelForm):
             self.fields['car'].initial = car
         # Hide the car field in the form
         self.fields['car'].widget = forms.HiddenInput()
+        self.fields['featured'].required = False
 
+    def save(self, commit=True):
+        images = self.cleaned_data.get('images', [])
+        featured = self.cleaned_data.get('featured', False)
+        car = self.cleaned_data.get('car')
+        instances = []
+
+        for image in images:
+            instance = CarImages(car=car, image=image, featured=featured)
+            if commit:
+                instance.save()
+            instances.append(instance)
+            # Reset featured to False for subsequent images
+            featured = False
+
+        return instances
 
 class CarWithImagesForm(forms.ModelForm):
     images = MultipleFileField(required=False)

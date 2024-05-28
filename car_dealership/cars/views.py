@@ -15,9 +15,8 @@ def index(request):
 def get_car_by_id(request, car_id):
     car = get_object_or_404(
         models.Car.objects.prefetch_related('carimages_set'), id=car_id)
-    car_images = car.carimages_set.all()
+    car_images = car.carimages_set.all().order_by('-featured')
     return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images})
-
 
 
 def get_most_recent_paginated(request):
@@ -42,7 +41,8 @@ def get_most_recent_paginated(request):
         filters['price__gte'] = minPriceFilter
     if maxPriceFilter:
         filters['price__lte'] = maxPriceFilter
-    cars = models.Car.objects.filter(**filters)
+    cars = models.Car.objects.filter(
+        **filters).prefetch_related('carimages_set')
     if search_query:
         cars = cars.filter(
             Q(model_name__name__icontains=search_query) |
@@ -59,6 +59,10 @@ def get_most_recent_paginated(request):
     except EmptyPage:
         cars_page = paginator.page(paginator.num_pages)
 
+    for car in cars_page:
+        featured_image = car.carimages_set.filter(featured=True).first()
+        car.featured_image = featured_image
+
     unique_brands = models.Car.objects.values_list(
         'model_name__manufacturer__name', flat=True).distinct()
     models_list = []
@@ -68,6 +72,7 @@ def get_most_recent_paginated(request):
 
     params = request.GET.copy()
     return render(request, 'index.html', {'cars': cars_page, 'brands': unique_brands, 'models': models_list, 'page_obj': cars_page, 'params': params})
+
 
 def admin_forms(request, form_type):
     form_map = {
@@ -120,6 +125,12 @@ def edit_car(request, car_id):
             images = request.FILES.getlist('images')
             for image in images:
                 models.CarImages.objects.create(car=car, image=image)
+
+            featured_image_id = request.POST.get('featured_image')
+            if featured_image_id:
+                featured_image = models.CarImages.objects.get(id=featured_image_id)
+                featured_image.featured = True
+                featured_image.save()
 
             messages.success(request, 'Car details updated successfully.')
             return redirect('car', car_id=car.id)
