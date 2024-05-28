@@ -2,7 +2,8 @@ from django.forms.widgets import ClearableFileInput
 from django import forms
 from .models import Manufacturer, BrandModel, Car, CarImages
 
-class MultipleFileInput(ClearableFileInput):
+
+class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
 
@@ -22,15 +23,18 @@ class ManufacturerForm(forms.ModelForm):
         model = Manufacturer
         fields = ['name']
 
+
 class BrandModelForm(forms.ModelForm):
     class Meta:
         model = BrandModel
         fields = ['manufacturer', 'name']
 
+
 class CarForm(forms.ModelForm):
     class Meta:
         model = Car
-        fields = ['model_name', 'year', 'price', 'description', 'petrol_type', 'car_type', 'gear_type']
+        fields = ['model_name', 'year', 'price', 'description',
+                  'petrol_type', 'car_type', 'gear_type']
 
 
 class CarImagesForm(forms.ModelForm):
@@ -45,4 +49,18 @@ class CarImagesForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if car:
             self.fields['car'].initial = car
-            self.fields['car'].widget = forms.HiddenInput()
+        # Hide the car field in the form
+        self.fields['car'].widget = forms.HiddenInput()
+
+
+class CarWithImagesForm(forms.ModelForm):
+    images = MultipleFileField(required=False)
+
+    class Meta:
+        model = Car
+        fields = ['model_name', 'year', 'price', 'description',
+                  'petrol_type', 'car_type', 'gear_type', 'images']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['images'].widget.attrs.update({'multiple': True})
