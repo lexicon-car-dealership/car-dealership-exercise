@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Edit Car: {{ car.model_name }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ car_form.as_p }}
+        <h3>Current Images</h3>
+        <div class="row">
+            {% for image in car_images %}
+            <div class="col-md-3 mb-3">
+                <div class="position-relative">
+                    <img src="{{ image.image.url }}" class="img-thumbnail" alt="Car image">
+                    <form method="post" action="{% url 'delete_car_image' image.id %}" class="position-absolute top-0 start-100 translate-middle">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">&times;</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {{ car_images_form.as_p }}
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+</div>
+{% endblock %}

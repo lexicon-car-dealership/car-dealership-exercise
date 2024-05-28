@@ -107,3 +107,58 @@ def admin_forms(request, form_type):
         form = form_map[form_type]()
 
     return render(request, 'forms/admin.html', {'form': form})
+
+
+def edit_car(request, car_id):
+    car = get_object_or_404(models.Car, id=car_id)
+    if request.method == 'POST':
+        print(car)
+        car_form = CarForm(request.POST, instance=car)
+        car_images_form = CarImagesForm(request.POST, request.FILES)
+
+        if car_form.is_valid() and car_images_form.is_valid():
+            car_form.save()
+            car_images_form.save()
+            
+            images = request.FILES.getlist('image')
+            for image in images:
+                models.CarImages.objects.create(car=car, image=image)
+
+            messages.success(request, 'Car details updated successfully.')
+            return redirect('car_detail', car_id=car.id)
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        car_form = CarForm(instance=car)
+        car_images_form = CarImagesForm(car=car)
+
+    car_images = car.carimages_set.all()
+    return render(request, 'car/edit_car.html', {
+        'car_form': car_form,
+        'car_images_form': car_images_form,
+        'car_images': car_images,
+        'car': car
+    })
+
+import os 
+
+
+def delete_car_image(request, image_id):
+    image = get_object_or_404(models.CarImages, id=image_id)
+    car_id = image.car.id
+    if request.method == 'POST':
+        # Store the image path to delete after the database deletion
+        image_path = image.image.path
+        image.delete()
+
+        # Check if the file exists and delete it
+        if os.path.isfile(image_path):
+            try:
+                os.remove(image_path)
+                messages.success(request, 'Image deleted successfully.')
+            except Exception as e:
+                messages.error(request, f'Error deleting image file: {e}')
+        else:
+            messages.error(request, 'Image file not found.')
+
+    return redirect('edit_car', car_id=car_id)
