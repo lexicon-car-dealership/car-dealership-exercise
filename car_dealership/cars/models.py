@@ -1,3 +1,4 @@
+import os
 from django.db import models
 import locale
 
@@ -61,6 +62,9 @@ class Car(models.Model):
         return f"{self.model_name} ({self.year})"
 
 
+def car_images_upload_to(instance, filename):
+    return os.path.join('car_images', str(instance.car.id), filename)
+
 class CarImages(models.Model):
     car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='car_images/')
+    image = models.ImageField(upload_to=car_images_upload_to)
