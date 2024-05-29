@@ -39,3 +39,46 @@ nav #menu-bar.active {
 #filter_form {
   margin-top: var(--step-spacing);
 }
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: var(--step-spacing);
+}
+
+.nav-search>input {
+  width: 100%;
+}
+
+.nav-search-filters {
+  display: none;
+}
+.nav-search-filters.active {
+  display: flex;
+  flex-direction: column;
+}
+.nav-search-filters label {
+  visibility: hidden;
+}
+
+@media (min-width: 768px) {
+  header {
+    display: grid;
+    grid-template-columns: 200px repeat(5, 1fr);
+  }
+  nav {
+    grid-column: 1 / 7;
+    grid-row: 1 / 2;
+  }
+  nav #menu-bar {
+    display: none;
+  }
+  #filter_form {
+    grid-column: 2 / 6;
+    grid-row: 1 / 2;
+  }
+  .nav-search-filters.active {
+    display: flex;
+    flex-direction: row;
+  }
+}
