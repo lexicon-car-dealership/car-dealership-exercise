@@ -1,6 +1,7 @@
 from django.forms.widgets import ClearableFileInput
 from django import forms
 from .models import Manufacturer, BrandModel, Car, CarImages
+from django.forms.widgets import ClearableFileInput, TextInput, NumberInput, Textarea, Select
 
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -69,6 +70,7 @@ class CarImagesForm(forms.ModelForm):
 
         return instances
 
+
 class CarWithImagesForm(forms.ModelForm):
     images = MultipleFileField(required=False)
 
@@ -76,6 +78,54 @@ class CarWithImagesForm(forms.ModelForm):
         model = Car
         fields = ['model_name', 'year', 'price', 'description',
                   'petrol_type', 'car_type', 'gear_type', 'images']
+        widgets = {
+            'model_name': TextInput(attrs={'class': 'form-control'}),
+            'year': NumberInput(attrs={'class': 'form-control'}),
+            'price': NumberInput(attrs={'class': 'form-control'}),
+            'description': Textarea(attrs={'class': 'form-control'}),
+            'petrol_type': Select(attrs={'class': 'form-control'}),
+            'car_type': Select(attrs={'class': 'form-control'}),
+            'gear_type': Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['images'].widget.attrs.update(
+            {'multiple': True, 'class': 'form-control'})
+        
+class AddCarForm(forms.ModelForm):
+    manufacturer_name = forms.CharField(
+        max_length=255,
+        label="Manufacturer Name",
+        widget=TextInput(attrs={'class': 'form-control',
+                         'placeholder': 'Enter manufacturer name'})
+    )
+    brand_model_name = forms.CharField(
+        max_length=255,
+        label="Brand Model Name",
+        widget=TextInput(attrs={'class': 'form-control',
+                         'placeholder': 'Enter brand model name'})
+    )
+    images = MultipleFileField(
+        required=False,
+        widget=MultipleFileInput(
+            attrs={'class': 'form-control', 'multiple': True})
+    )
+
+    class Meta:
+        model = Car
+        fields = [
+            'manufacturer_name', 'brand_model_name', 'year', 'price', 'description',
+            'petrol_type', 'car_type', 'gear_type', 'images'
+        ]
+        widgets = {
+            'year': NumberInput(attrs={'class': 'form-control'}),
+            'price': NumberInput(attrs={'class': 'form-control'}),
+            'description': Textarea(attrs={'class': 'form-control'}),
+            'petrol_type': Select(attrs={'class': 'form-control'}),
+            'car_type': Select(attrs={'class': 'form-control'}),
+            'gear_type': Select(attrs={'class': 'form-control'})
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
