@@ -1,0 +1,41 @@
+header {
+  --main-color: #003285;
+  --step-spacing: 20px;
+  padding: 20px;
+  background-color: var(--main-color);
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  color: #fff
+}
+
+nav #menu-bar {
+  position: absolute;
+  background-color: var(--main-color);
+  z-index: 999;
+  height: 100vh;
+  top: 100px;
+  width: 60%;
+  right: -100%;
+  padding-top: var(--step-spacing);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+nav #menu-bar.active {
+  display: flex;
+  right: 0%;
+}
+
+.profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+#filter_form {
+  margin-top: var(--step-spacing);
+}

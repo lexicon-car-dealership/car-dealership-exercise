@@ -11,4 +11,9 @@ document.addEventListener('DOMContentLoaded', function () {
   //     window.location.href = `${filterForm.action}?${urlParams.toString()}`;
   //   }
   // });
+  const profileDropdown = document.getElementById('navbarDropdown');
+  const menuBar = document.getElementById('menu-bar');
+  profileDropdown.addEventListener('click', () => {
+    menuBar.classList.toggle('active');
+  })
 });
