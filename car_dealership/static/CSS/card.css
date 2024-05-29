@@ -1,0 +1,9 @@
+.card {
+  border: 1px black;
+  border-radius: 10px;
+}
+.card-img {
+  width: 100vw
+}
+.card-body{}
+.card-title{}
