@@ -132,15 +132,26 @@ def edit_car(request, car_id):
 
         if car_form.is_valid():
             car = car_form.save()
-
+            has_featured_image = car.carimages_set.filter(
+                featured=True).exists()
+            
             images = request.FILES.getlist('images')
-            for image in images:
-                models.CarImages.objects.create(car=car, image=image)
+            for i,image in enumerate(images):
+                if not has_featured_image and i==0:
+                    models.CarImages.objects.create(
+                        car=car, image=image, featured=True)
+                else:
+                    models.CarImages.objects.create(
+                        car=car, image=image)
+                    
 
             featured_image_id = request.POST.get('featured_image')
             if featured_image_id:
-                featured_image = models.CarImages.objects.get(
-                    id=featured_image_id)
+                # Unset previously featured images
+                CarImages.objects.filter(
+                    car=car, featured=False).update(featured=False)
+                # Set new featured image
+                featured_image = CarImages.objects.get(id=featured_image_id)
                 featured_image.featured = True
                 featured_image.save()
 
@@ -202,8 +213,13 @@ def delete_car_image(request, image_id):
     image_path = image.image.path
 
     if request.method == 'POST':
+        featured=image.featured
         image.delete()
-
+        if featured:
+            has_images = car.carimages_set.all()
+            if len(has_images)>0:
+                has_images[0].featured=True
+                has_images[0].save()
         # Delete the image file
         if os.path.isfile(image_path):
             try:
