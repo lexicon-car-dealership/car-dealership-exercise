@@ -10,13 +10,10 @@
   <body>
     <header>
       <nav>
-        <a href="{% url 'index' %}">Car Dealership</a>
-        <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-          <span></span>
-        </button>
-
-        <div id="navbarTogglerDemo03">
-          {% include 'filter.html' with models=models %}
+        <a href="{% url 'index' %}">
+          <img src="{% static 'images/lexicon-logo.png' %}" alt="logo-home">
+        </a>
+        <div id="nav-content">
           <ul>
             <li>
               <a href="{% url 'index' %}">Home <span>(current)</span></a>
@@ -38,6 +35,9 @@
 
             <!-- Profile Dropdown -->
             {% if user.is_authenticated %}
+              {% if user.is_superuser or user.is_staff %}
+                <li><a class="nav-link" href="{% url 'add_car' %}">Add Car</a></li>
+              {% endif %}
             <li>
               <a href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src="{% static 'images/profile_placeholder.png' %}" alt="Profile">
@@ -61,6 +61,7 @@
           </ul>
         </div>
       </nav>
+      {% include 'filter.html' with models=models %}
     </header>
     <main>
       {% block content %} {% endblock %}
