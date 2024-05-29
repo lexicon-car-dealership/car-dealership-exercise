@@ -94,16 +94,11 @@ class CarWithImagesForm(forms.ModelForm):
             {'multiple': True, 'class': 'form-control'})
         
 class AddCarForm(forms.ModelForm):
-    manufacturer_name = forms.CharField(
-        max_length=255,
-        label="Manufacturer Name",
-        widget=TextInput(attrs={'class': 'form-control',
-                         'placeholder': 'Enter manufacturer name'})
-    )
-    brand_model_name = forms.CharField(
-        max_length=255,
+
+    brand_model_name = forms.ModelChoiceField(
+        queryset=BrandModel.objects.all(),
         label="Brand Model Name",
-        widget=TextInput(attrs={'class': 'form-control',
+        widget=Select(attrs={'class': 'form-control',
                          'placeholder': 'Enter brand model name'})
     )
     images = MultipleFileField(
@@ -115,13 +110,13 @@ class AddCarForm(forms.ModelForm):
     class Meta:
         model = Car
         fields = [
-            'manufacturer_name', 'brand_model_name', 'year', 'price', 'description',
+            'brand_model_name', 'year', 'price', 'description',
             'petrol_type', 'car_type', 'gear_type', 'images'
         ]
         widgets = {
-            'year': NumberInput(attrs={'class': 'form-control'}),
-            'price': NumberInput(attrs={'class': 'form-control'}),
-            'description': Textarea(attrs={'class': 'form-control'}),
+            'year': NumberInput(attrs={'class': 'form-control', 'placeholder': 'YYYY'}),
+            'price': NumberInput(attrs={'class': 'form-control', 'placeholder': 'price'}),
+            'description': Textarea(attrs={'class': 'form-control', 'placeholder': 'description'}),
             'petrol_type': Select(attrs={'class': 'form-control'}),
             'car_type': Select(attrs={'class': 'form-control'}),
             'gear_type': Select(attrs={'class': 'form-control'})
