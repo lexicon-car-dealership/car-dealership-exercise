@@ -1,10 +1,7 @@
 <form id="filter_form" method="get" action="{% url 'index' %}">
   <div class="nav-search">
-      <input id="filter_form_search" name="search" type="search" placeholder="Search" value="{{request.GET.search}}"
-        aria-label="Search" />
-      <button type="submit">
-        <i></i>
-      </button>
+      <input id="filter_form_search" name="search" type="search" placeholder="Search" value="{{request.GET.search}}" aria-label="Search" />
+      <button type="submit"></button>
   </div>
     <div>
         <label for="brand_select">Brand:</label>
