@@ -1,3 +1,4 @@
+
 from .models import Manufacturer, BrandModel, Car, CarImages
 from .forms import CarWithImagesForm, ManufacturerForm, BrandModelForm, CarForm, CarImagesForm, AddCarForm
 from django.shortcuts import render, redirect, get_object_or_404
@@ -18,7 +19,15 @@ def get_car_by_id(request, car_id):
     car = get_object_or_404(
         models.Car.objects.prefetch_related('carimages_set'), id=car_id)
     car_images = car.carimages_set.all().order_by('-featured')
-    return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images})
+
+    similar_cars = models.Car.objects.filter(model_name=car.model_name).exclude(
+        id=car_id).prefetch_related('carimages_set')
+
+    for similar_car in similar_cars:
+        featured_image = similar_car.carimages_set.filter(
+            featured=True).first()
+        similar_car.featured_image = featured_image
+    return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images, 'similar_cars': similar_cars[:4]})
 
 
 def get_most_recent_paginated(request):
@@ -130,7 +139,8 @@ def edit_car(request, car_id):
 
             featured_image_id = request.POST.get('featured_image')
             if featured_image_id:
-                featured_image = models.CarImages.objects.get(id=featured_image_id)
+                featured_image = models.CarImages.objects.get(
+                    id=featured_image_id)
                 featured_image.featured = True
                 featured_image.save()
 
@@ -218,3 +228,4 @@ def delete_car_image(request, image_id):
             messages.success(request, 'Image deleted successfully.')
 
     return redirect('edit_car', car_id=car_id)
+
