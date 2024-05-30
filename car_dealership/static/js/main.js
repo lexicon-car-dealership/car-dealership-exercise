@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // });
   //profile stuff
   const profileDropdown = document.getElementById('navbarDropdown');
-  const menuBar = document.getElementById('menu-bar');
-  profileDropdown.addEventListener('click', () => {
+  if (profileDropdown) {
+    const menuBar = document.getElementById('menu-bar');
+    profileDropdown.addEventListener('click', () => {
     menuBar.classList.toggle('active');
   })
+  }
   //filters
   const filterButton = document.getElementById('filter-toggle');
   const navSearchFilters = document.getElementById('nav-search-filters');
