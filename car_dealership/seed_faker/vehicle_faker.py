@@ -1,6 +1,9 @@
+#from pathlib import Path
+#print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
+
 import faker
 import datetime
-from random import choice, random
+from random import choice, random, randint
 from faker.providers import BaseProvider
 from vehicle_dict import vehicles, PETROL_CHOICES, CAR_TYPE_CHOICES, GEAR_CHOICES
 
@@ -58,15 +61,16 @@ class VehicleProvider(BaseProvider):
         Returns a random vehicle dict example:
         {'year': 2010, 'manufacturer_name': 'Dodge', 'model_name': 'Ram 1500 Regular Cab', 'car_type': 'Sedan', 'VIN': 'VK1GR2EU7BA555CTA', 'manufacturer_country': 'default country', 'manufacturer_established_date': datetime.date(1999, 10, 10), 'price': 123456, 'vehicle_description': 'Super-duper description', 'petrol_type': 'Hybrid', 'gear_type': 'Manual'}
         """
-        veh = choice(vehicles)
+        
         fake = faker.Faker()
-        veh = veh | {
-            'VIN': fake.vin(),
+        veh = {
+            #'VIN': fake.vin(),
+            'year': randint(1992, 2024),
             'car_type': VehicleProvider.vehicle_car_type(self),
-            'manufacturer_country': VehicleProvider.vehicle_manufacturer_country(self),
-            'manufacturer_established_date': VehicleProvider.vehicle_manufacturer_established_date(self),
+            #'manufacturer_country': VehicleProvider.vehicle_manufacturer_country(self),
+            #'manufacturer_established_date': VehicleProvider.vehicle_manufacturer_established_date(self),
             'price': VehicleProvider.vehicle_price(),
-            'vehicle_description': VehicleProvider.vehicle_description(),
+            'description': VehicleProvider.vehicle_description(),
             'petrol_type': VehicleProvider.vehicle_petrol_type(),
             'gear_type': VehicleProvider.vehicle_gear_type()
         }
@@ -106,7 +110,7 @@ class VehicleProvider(BaseProvider):
         return choice(CAR_TYPE_CHOICES)
 
     def vehicle_price() -> int:
-        return random.randint(30000, 400000)
+        return randint(30000, 40000)
 
     def vehicle_description() -> str:
         return "Super-duper description"
