@@ -12,3 +12,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+  document
+    .getElementById("search-input")
+    .addEventListener("input", function () {
+      const searchQuery = this.value.toLowerCase();
+      const items = document.querySelectorAll("#item-list .list-group-item");
+      let hasResults = false;
+
+      items.forEach((item) => {
+        if (item.textContent.toLowerCase().includes(searchQuery)) {
+          item.style.display = "";
+          hasResults = true;
+        } else {
+          item.style.display = "none";
+        }
+      });
+
+      document.getElementById("no-results").style.display = hasResults
+        ? "none"
+        : "";
+    });
+
+  document
+    .getElementById("create-new-link")
+    .addEventListener("click", function () {
+      const searchQuery = document.getElementById("search-input").value;
+      const manufacturerNameInput = document.querySelector(
+        '#add-manufacturer-form input[name="name"]'
+      );
+      if (manufacturerNameInput) {
+        manufacturerNameInput.value = searchQuery;
+      }
+    });

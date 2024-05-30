@@ -1,15 +1,33 @@
-{% extends 'base.html' %} {% block content %}
-<h1>{{ form_name }}</h1>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit">Submit</button>
-</form>
+{% extends 'base.html' %}
+
+{% block content %}
 <div class="container mt-3">
-  <h2>Current items in database</h2>
-  <ul class="list-group overflow-auto" style="max-height: 400px">
+  <h2>Current items in {{ form_name }}</h2>
+  <input type="text" id="search-input" class="form-control" placeholder="Search {{ form_name|lower }}...">
+  <ul class="list-group overflow-auto mt-2" id="item-list" style="max-height: 400px">
     {% for item in data %}
     <li class="list-group-item">{{ item }}</li>
     {% endfor %}
   </ul>
+  <div id="no-results" class="mt-2" style="display: none;">
+    No {{ form_name|lower }} found. <a href="#" id="create-new-link" data-bs-toggle="modal" data-bs-target="#addManufacturerModal">Create a new {{ form_name|lower }}</a>
+  </div>
+</div>
+<div class="modal fade" id="addManufacturerModal" tabindex="-1" aria-labelledby="addManufacturerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addManufacturerModalLabel">New {{ form_name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-manufacturer-form" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
