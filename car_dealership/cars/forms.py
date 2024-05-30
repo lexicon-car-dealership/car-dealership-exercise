@@ -92,6 +92,7 @@ class EditCarForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['images'].widget.attrs.update(
             {'multiple': True, 'class': 'form-control'})
+        self.fields['milage'].label = "Milage (km)"
         
 class AddCarForm(forms.ModelForm):
 
