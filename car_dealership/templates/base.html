@@ -23,16 +23,21 @@
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-              {% if user.is_authenticated %}
-                  {% if user.is_superuser or user.is_staff %}
-                      <a class="nav-link" href="{% url 'add_car' %}">Add Car</a>
-                  {% endif %}
-              {% endif %}
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
+            {% if user.is_authenticated %}
+                {% if user.is_superuser or user.is_staff %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Manage
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                    <li><a class="dropdown-item" href="{% url 'admin_forms' 'manufacturer' %}">Add Manufacturer</a></li>
+                    <li><a class="dropdown-item" href="{% url 'admin_forms' 'brandmodel' %}">Add Brand Model</a></li>
+                    <li><a class="dropdown-item" href="{% url 'add_car' %}">Add Car</a></li>
+                  </ul>
+                </li>
+                {% endif %}
+            {% endif %}
+
             <!-- Profile Dropdown -->
             {% if user.is_authenticated %}
             <li class="nav-item dropdown">
