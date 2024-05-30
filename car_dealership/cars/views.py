@@ -87,37 +87,40 @@ def admin_forms(request, form_type):
         'car': CarForm,
         'carimages': CarImagesForm,
     }
+    form_name_map = {
+        'manufacturer': 'Manufacturer Form',
+        'brandmodel': 'Brand Model Form',
+        'car': 'Car Form',
+        'carimages': 'Car Images Form',
+    }
+
+    form_name = form_name_map.get(form_type, 'Admin Form')
+    FormClass = form_map.get(form_type)
+
+    if not FormClass:
+        messages.error(request, 'Invalid form type.')
+        return redirect('index')
 
     if request.method == 'POST':
-        if form_type == 'carimages':
-            form = CarImagesForm(request.POST, request.FILES)
-            if form.is_valid():
+        form = FormClass(request.POST, request.FILES)
+        if form.is_valid():
+            if form_type == 'carimages':
                 car = form.cleaned_data['car']
                 images = form.cleaned_data['image']
                 for image in images:
-                    models.CarImages.objects.create(car=car, image=image)
-                messages.success(
-                    request, 'Car images uploaded successfully.')
-                return redirect('index')
+                    CarImages.objects.create(car=car, image=image)
+                messages.success(request, 'Car images uploaded successfully.')
             else:
-                print(form.errors)
-                messages.error(
-                    request, 'Form is not valid. Please check the fields.')
-        else:
-            form = form_map[form_type](request.POST, request.FILES)
-            if form.is_valid():
                 form.save()
-                messages.success(
-                    request, f'{form_type.capitalize()} saved successfully.')
-                return redirect('index')
-            else:
-                print(form.errors)
-                messages.error(
-                    request, 'Form is not valid. Please check the fields.')
+                messages.success(request, f'{form_name} saved successfully.')
+            return redirect('index')
+        else:
+            messages.error(
+                request, 'Form is not valid. Please check the fields.')
     else:
-        form = form_map[form_type]()
+        form = FormClass()
 
-    return render(request, 'forms/admin_forms.html', {'form': form})
+    return render(request, 'forms/admin_forms.html', {'form': form, 'form_name': form_name})
 
 
 def edit_car(request, car_id):
