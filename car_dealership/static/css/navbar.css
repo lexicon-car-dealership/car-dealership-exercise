@@ -8,6 +8,7 @@ header {
 nav {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: #fff
 }
 
@@ -64,7 +65,7 @@ nav #menu-bar.active {
 @media (min-width: 768px) {
   header {
     display: grid;
-    grid-template-columns: 200px repeat(5, 1fr);
+    grid-template-columns: 180px repeat(5, 1fr);
   }
   nav {
     grid-column: 1 / 7;
@@ -80,5 +81,7 @@ nav #menu-bar.active {
   .nav-search-filters.active {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
   }
 }
