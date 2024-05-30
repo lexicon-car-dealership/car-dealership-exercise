@@ -1,6 +1,6 @@
 
 from .models import Manufacturer, BrandModel, Car, CarImages
-from .forms import CarWithImagesForm, ManufacturerForm, BrandModelForm, CarForm, CarImagesForm, AddCarForm
+from .forms import EditCarForm, ManufacturerForm, BrandModelForm, CarForm, CarImagesForm, AddCarForm
 from django.shortcuts import render, redirect, get_object_or_404
 import os
 from django.shortcuts import get_object_or_404, render, redirect
@@ -10,12 +10,7 @@ from django.contrib import messages
 
 from . import models
 
-
-def index(request):
-    return render(request, 'index.html')
-
-
-def get_car_by_id(request, car_id):
+def car_detail(request, car_id):
     car = get_object_or_404(
         models.Car.objects.prefetch_related('carimages_set'), id=car_id)
     car_images = car.carimages_set.all().order_by('-featured')
@@ -30,28 +25,28 @@ def get_car_by_id(request, car_id):
     return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images, 'similar_cars': similar_cars[:4]})
 
 
-def get_most_recent_paginated(request):
-    brandFilter = request.GET.get('brand', None)
-    modelFilter = request.GET.get('model', None)
-    fuelFilter = request.GET.get('fuel', None)
-    yearFilter = request.GET.get('year', None)
-    minPriceFilter = request.GET.get('minPrice', None)
-    maxPriceFilter = request.GET.get('maxPrice', None)
+def index(request):
+    brand_filter = request.GET.get('brand', None)
+    model_filter = request.GET.get('model', None)
+    fuel_filter = request.GET.get('fuel', None)
+    year_filter = request.GET.get('year', None)
+    min_price_filter = request.GET.get('minPrice', None)
+    max_price_filter = request.GET.get('maxPrice', None)
     search_query = request.GET.get('search', None)
 
     filters = {}
-    if brandFilter:
-        filters['model_name__manufacturer__name__iexact'] = brandFilter
-    if modelFilter:
-        filters['model_name__name__iexact'] = modelFilter
-    if fuelFilter:
-        filters['petrol_type'] = fuelFilter
-    if yearFilter:
-        filters['year'] = yearFilter
-    if minPriceFilter:
-        filters['price__gte'] = minPriceFilter
-    if maxPriceFilter:
-        filters['price__lte'] = maxPriceFilter
+    if brand_filter:
+        filters['model_name__manufacturer__name__iexact'] = brand_filter
+    if model_filter:
+        filters['model_name__name__iexact'] = model_filter
+    if fuel_filter:
+        filters['petrol_type'] = fuel_filter
+    if year_filter:
+        filters['year'] = year_filter
+    if min_price_filter:
+        filters['price__gte'] = min_price_filter
+    if max_price_filter:
+        filters['price__lte'] = max_price_filter
     cars = models.Car.objects.filter(
         **filters).prefetch_related('carimages_set')
     if search_query:
@@ -77,8 +72,8 @@ def get_most_recent_paginated(request):
     unique_brands = models.Car.objects.values_list(
         'model_name__manufacturer__name', flat=True).distinct()
     models_list = []
-    if brandFilter:
-        models_list = models.Car.objects.filter(model_name__manufacturer__name=brandFilter).values_list(
+    if brand_filter:
+        models_list = models.Car.objects.filter(model_name__manufacturer__name=brand_filter).values_list(
             'model_name__name', flat=True).distinct()
 
     params = request.GET.copy()
@@ -122,13 +117,13 @@ def admin_forms(request, form_type):
     else:
         form = form_map[form_type]()
 
-    return render(request, 'forms/admin.html', {'form': form})
+    return render(request, 'forms/admin_forms.html', {'form': form})
 
 
 def edit_car(request, car_id):
     car = get_object_or_404(models.Car, id=car_id)
     if request.method == 'POST':
-        car_form = CarWithImagesForm(request.POST, request.FILES, instance=car)
+        car_form = EditCarForm(request.POST, request.FILES, instance=car)
 
         if car_form.is_valid():
             car = car_form.save()
@@ -160,7 +155,7 @@ def edit_car(request, car_id):
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
-        car_form = CarWithImagesForm(instance=car)
+        car_form = EditCarForm(instance=car)
 
     car_images = car.carimages_set.all()
     return render(request, 'car/edit_car.html', {
@@ -203,12 +198,12 @@ def delete_car_image(request, image_id):
     image_path = image.image.path
 
     if request.method == 'POST':
-        featured=image.featured
+        featured = image.featured
         image.delete()
         if featured:
             has_images = car.carimages_set.all()
-            if len(has_images)>0:
-                has_images[0].featured=True
+            if len(has_images) > 0:
+                has_images[0].featured = True
                 has_images[0].save()
         # Delete the image file
         if os.path.isfile(image_path):
