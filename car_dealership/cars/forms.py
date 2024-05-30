@@ -75,12 +75,13 @@ class EditCarForm(forms.ModelForm):
     images = MultipleFileField(required=False)
     class Meta:
         model = Car
-        fields = ['model_name', 'year', 'price', 'description',
+        fields = ['model_name', 'year', 'price', 'milage', 'description',
                   'petrol_type', 'car_type', 'gear_type', 'images']
         widgets = {
             'model_name': Select(attrs={'class': 'form-control'}),
             'year': NumberInput(attrs={'class': 'form-control'}),
             'price': NumberInput(attrs={'class': 'form-control'}),
+            'milage': NumberInput(attrs={'class': 'form-control'}),
             'description': Textarea(attrs={'class': 'form-control'}),
             'petrol_type': Select(attrs={'class': 'form-control'}),
             'car_type': Select(attrs={'class': 'form-control'}),
@@ -109,12 +110,13 @@ class AddCarForm(forms.ModelForm):
     class Meta:
         model = Car
         fields = [
-            'brand_model_name', 'year', 'price', 'description',
+            'brand_model_name', 'year', 'price', 'milage', 'description',
             'petrol_type', 'car_type', 'gear_type', 'images'
         ]
         widgets = {
             'year': NumberInput(attrs={'class': 'form-control', 'placeholder': 'YYYY'}),
             'price': NumberInput(attrs={'class': 'form-control', 'placeholder': 'Specify your price'}),
+            'milage': NumberInput(attrs={'class': 'form-control', 'placeholder': 'Specify your milage'}),
             'description': Textarea(attrs={'class': 'form-control', 'placeholder': 'Write your description here.'}),
             'petrol_type': Select(attrs={'class': 'form-control'}),
             'car_type': Select(attrs={'class': 'form-control'}),
