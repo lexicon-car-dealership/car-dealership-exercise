@@ -88,10 +88,10 @@ def admin_forms(request, form_type):
         'carimages': CarImagesForm,
     }
     form_name_map = {
-        'manufacturer': 'Manufacturer Form',
-        'brandmodel': 'Brand Model Form',
-        'car': 'Car Form',
-        'carimages': 'Car Images Form',
+        'manufacturer': 'Add Manufacturer',
+        'brandmodel': 'Add Brand Model',
+        'car': 'Add Car',
+        'carimages': 'Add Car Images',
     }
 
     form_name = form_name_map.get(form_type, 'Admin Form')
