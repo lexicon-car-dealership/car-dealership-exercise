@@ -1,9 +1,11 @@
+import os
 from django.db import models
+import locale
 
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=255)
-    
+
     def __str__(self):
         return self.name
 
@@ -11,10 +13,9 @@ class Manufacturer(models.Model):
 class BrandModel(models.Model):
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    
 
     def __str__(self):
-        return f"{self.manufacturer.name} {self.name} ({self.year})"
+        return f"{self.manufacturer.name} {self.name}"
 
 
 class Car(models.Model):
@@ -45,7 +46,6 @@ class Car(models.Model):
     year = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    image = models.ImageField(upload_to='car_images/', blank=True, null=True)
     petrol_type = models.CharField(
         max_length=10, choices=PETROL_CHOICES, default='Petrol')
     car_type = models.CharField(
@@ -54,5 +54,28 @@ class Car(models.Model):
         max_length=10, choices=GEAR_CHOICES, default='Manual')
     created_at = models.DateField(auto_now_add=True)
 
+    def get_price(self):
+        locale.setlocale(locale.LC_ALL, 'sv_SE.UTF-8')
+        return f'{locale.currency(self.price, grouping=True)}'
+
     def __str__(self):
         return f"{self.model_name} ({self.year})"
+
+
+def car_images_upload_to(instance, filename):
+    return os.path.join('car_images', str(instance.car.id), filename)
+
+
+class CarImages(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=car_images_upload_to)
+    featured = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.featured:
+            CarImages.objects.filter(
+                car=self.car, featured=True).update(featured=False)
+        super(CarImages, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.car.model_name.name} | image | {self.featured}'

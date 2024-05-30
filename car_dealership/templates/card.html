@@ -1,15 +1,12 @@
 <div class="col-7 col-md-5 col-lg-3 mb-3">
-  <a class="card" style="width: 18rem;">
-    <img class="card-img-top"
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/2019_Toyota_Corolla_Icon_Tech_VVT-i_Hybrid_1.8.jpg/1200px-2019_Toyota_Corolla_Icon_Tech_VVT-i_Hybrid_1.8.jpg"
-      alt="">
-    <div class="card-body" style="width: 18rem;">
-      <h5 class="card-title">Car title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-        content.</p>
+  <a href="{{ car.id }}" class="card" style="width: 18rem">
+    
+    <img class="card-img-top" src="{{ car.featured_image.image.url }}" alt="" />
+    <div class="card-body" style="width: 18rem">
+      <h5 class="card-title">{{ car.model_name.name }}</h5>
       <div>
         <p>Price</p>
-        <strong>123 000 kr</strong>
+        <strong>{{ car.get_price }}</strong>
       </div>
     </div>
   </a>

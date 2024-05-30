@@ -1,15 +1,72 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1 class="font-semibold">Used cars for sale</h1>
-  <p class="font-semibold bg-slate-600 text-green-400 p-5">
-    Discover a wide selection of used cars from various brands available for purchase, either through auction or at a fixed price. While many of these cars are in excellent condition, some may require minor repairs. Each vehicle has been thoroughly tested, with the results detailed in the respective advertisement.
-  </p>
-  <section class="container">
-    <div class="row gap-3">
-      {% for i in '0123456789'|make_list %}
-        {%include 'card.html'%}
-  {% endfor %}
+  <div class="container mt-5">
+    <h1 class="font-weight-bold text-center mb-4">Used Cars for Sale</h1>
+    <p class="bg-dark text-light p-4 rounded shadow-sm">
+      Discover a wide selection of used cars from various brands available for purchase, either through auction or at a fixed price. While many of these cars are in excellent condition, some may require minor repairs. Each vehicle has been thoroughly tested, with the results detailed in the respective advertisement.
+    </p>
+    <section class="container mt-4">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for car in cars %}
+          <div class="col">
+            {% include 'card.html' with car=car %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
   </div>
-  </section>
+
+<div class="container mt-5">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% for key, value in params.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo; first</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?{% for key, value in params.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">previous</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo; first</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">previous</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% for key, value in params.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">next</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?{% for key, value in params.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">last &raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">next</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">last &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
 {% endblock %}

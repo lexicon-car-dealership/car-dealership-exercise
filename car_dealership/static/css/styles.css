@@ -1,0 +1,56 @@
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.form-control {
+  border-radius: 0.25rem;
+}
+
+.navbar-nav {
+  margin-left: 60px;
+}
+
+.search-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.input-group {
+  max-width: 400px;
+  width: 100%;
+}
+
+.input-group .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group .input-group-text {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  cursor: pointer;
+}
+
+.profile-picture {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.custom-dropdown-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.custom-dropdown-toggle img {
+  margin-left: 8px;
+  width: 20px;
+  height: 20px;
+}
