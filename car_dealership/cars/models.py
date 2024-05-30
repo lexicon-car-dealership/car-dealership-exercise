@@ -4,7 +4,7 @@ import locale
 
 
 class Manufacturer(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -12,7 +12,7 @@ class Manufacturer(models.Model):
 
 class BrandModel(models.Model):
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return f"{self.manufacturer.name} {self.name}"
