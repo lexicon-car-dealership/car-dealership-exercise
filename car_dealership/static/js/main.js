@@ -22,8 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
   //filters
   const filterButton = document.getElementById('filter-toggle');
   const navSearchFilters = document.getElementById('nav-search-filters');
+  const headerElement = document.getElementById('header');
   filterButton.addEventListener('click', (event) => {
     event.preventDefault();
-    navSearchFilters.classList.toggle('active');
+    const isFilterActive = navSearchFilters.classList.toggle('active');
+    headerElement.style = isFilterActive ? 'grid-template-rows: 70px 50px' : '';
   })
 });
