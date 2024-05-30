@@ -175,26 +175,16 @@ def add_car(request):
         form = AddCarForm(request.POST, request.FILES)
 
         if form.is_valid():
-            manufacturer_name = form.cleaned_data['manufacturer_name']
             brand_model_name = form.cleaned_data['brand_model_name']
             images = request.FILES.getlist('images')
 
-            # Handle Manufacturer
-            manufacturer, created = Manufacturer.objects.get_or_create(
-                name=manufacturer_name)
-
-            # Handle BrandModel
-            brand_model, created = BrandModel.objects.get_or_create(
-                name=brand_model_name, manufacturer=manufacturer)
-
-            # Handle Car
             car = form.save(commit=False)
-            car.model_name = brand_model
+            car.model_name = brand_model_name
             car.save()
 
             # Handle Images
-            for image in images:
-                CarImages.objects.create(car=car, image=image)
+            for i, image in enumerate(images):
+                CarImages.objects.create(car=car, image=image, featured=True if i == 0 else False)
 
             messages.success(request, 'Car added successfully.')
             return redirect('car', car_id=car.id)
