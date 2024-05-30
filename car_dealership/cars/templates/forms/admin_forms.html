@@ -1,10 +1,15 @@
-{% extends 'base.html' %}
-
-{% block content %}
-  <h1>{{ form_name }}</h1>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-  </form>
+{% extends 'base.html' %} {% block content %}
+<h1>{{ form_name }}</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Submit</button>
+</form>
+<div class="container mt-3">
+  <h2>Current items in database</h2>
+  <ul class="list-group overflow-auto" style="max-height: 400px">
+    {% for item in data %}
+    <li class="list-group-item">{{ item }}</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

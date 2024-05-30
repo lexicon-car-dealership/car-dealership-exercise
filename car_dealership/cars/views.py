@@ -55,7 +55,7 @@ def index(request):
             Q(model_name__manufacturer__name__icontains=search_query) |
             Q(description__icontains=search_query)
         )
-    cars = cars.order_by('created_at')
+    cars = cars.order_by('-created_at')
     paginator = Paginator(cars, 10)
     page = request.GET.get('page', 1)
     try:
@@ -79,6 +79,13 @@ def index(request):
     params = request.GET.copy()
     return render(request, 'index.html', {'cars': cars_page, 'brands': unique_brands, 'models': models_list, 'page_obj': cars_page, 'params': params})
 
+
+def get_additional_form_data(form):
+    if form == 'manufacturer':
+        return [i.name for i in Manufacturer.objects.all()]
+    
+    if form == 'brandmodel':
+        return [i.name for i in BrandModel.objects.all()]
 
 def admin_forms(request, form_type):
     form_map = {
@@ -119,8 +126,8 @@ def admin_forms(request, form_type):
                 request, 'Form is not valid. Please check the fields.')
     else:
         form = FormClass()
-
-    return render(request, 'forms/admin_forms.html', {'form': form, 'form_name': form_name})
+    data = get_additional_form_data(form_type)
+    return render(request, 'forms/admin_forms.html', {'form': form, 'form_name': form_name, 'data': data})
 
 
 def edit_car(request, car_id):
