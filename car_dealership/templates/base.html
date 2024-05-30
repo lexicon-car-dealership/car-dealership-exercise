@@ -16,23 +16,23 @@
         <ul>
           <!-- Profile Dropdown -->
           {% if user.is_authenticated %}
-            {% if user.is_superuser or user.is_staff %}
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Manage
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                <li><a class="dropdown-item" href="{% url 'admin_forms' 'manufacturer' %}">Add Manufacturer</a></li>
-                <li><a class="dropdown-item" href="{% url 'admin_forms' 'brandmodel' %}">Add Brand Model</a></li>
-                <li><a class="dropdown-item" href="{% url 'add_car' %}">Add Car</a></li>
-              </ul>
-            </li>
-            {% endif %}
           <li>
             <button id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
               <img class="profile-img" src="{% static 'images/profile_placeholder.png' %}" alt="Profile">
             </button>
             <ul id="menu-bar" aria-labelledby="navbarDropdown">
+              {% if user.is_superuser or user.is_staff %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Manage
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                  <li><a class="dropdown-item" href="{% url 'admin_forms' 'manufacturer' %}">Add Manufacturer</a></li>
+                  <li><a class="dropdown-item" href="{% url 'admin_forms' 'brandmodel' %}">Add Brand Model</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_car' %}">Add Car</a></li>
+                </ul>
+              </li>
+              {% endif %}
               <li><a href="{% url 'profile' %}">Profile</a></li>
               <hr width="80%">
               <li>
