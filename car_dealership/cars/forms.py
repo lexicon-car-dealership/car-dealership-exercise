@@ -71,15 +71,14 @@ class CarImagesForm(forms.ModelForm):
         return instances
 
 
-class CarWithImagesForm(forms.ModelForm):
+class EditCarForm(forms.ModelForm):
     images = MultipleFileField(required=False)
-
     class Meta:
         model = Car
         fields = ['model_name', 'year', 'price', 'description',
                   'petrol_type', 'car_type', 'gear_type', 'images']
         widgets = {
-            'model_name': TextInput(attrs={'class': 'form-control'}),
+            'model_name': Select(attrs={'class': 'form-control'}),
             'year': NumberInput(attrs={'class': 'form-control'}),
             'price': NumberInput(attrs={'class': 'form-control'}),
             'description': Textarea(attrs={'class': 'form-control'}),
@@ -115,8 +114,8 @@ class AddCarForm(forms.ModelForm):
         ]
         widgets = {
             'year': NumberInput(attrs={'class': 'form-control', 'placeholder': 'YYYY'}),
-            'price': NumberInput(attrs={'class': 'form-control', 'placeholder': 'price'}),
-            'description': Textarea(attrs={'class': 'form-control', 'placeholder': 'description'}),
+            'price': NumberInput(attrs={'class': 'form-control', 'placeholder': 'Specify your price'}),
+            'description': Textarea(attrs={'class': 'form-control', 'placeholder': 'Write your description here.'}),
             'petrol_type': Select(attrs={'class': 'form-control'}),
             'car_type': Select(attrs={'class': 'form-control'}),
             'gear_type': Select(attrs={'class': 'form-control'})
