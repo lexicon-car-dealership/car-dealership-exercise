@@ -70,6 +70,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cars',
     'authentication',
+    #'seed_faker',
+    #'seed',
 ]
 
 MIDDLEWARE = [
