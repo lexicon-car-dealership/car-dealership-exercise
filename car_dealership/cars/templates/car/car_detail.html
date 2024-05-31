@@ -1,95 +1,64 @@
-{% extends 'base.html' %}
-{% block title %}{{ car.model_name }}{% endblock %}
-{% block content %}
-  <div class="container mt-5">
-    {% if user.is_superuser %}
-      <a class="button button-primary" href="{% url 'edit_car' car.id %}">Edit</a>
+{% extends 'base.html' %} {% block title %}{{ car.model_name }}{% endblock %}
+{%block content %}
+<section class="car_detail">
+  <div class="car_detail_images">
+    {% if car_images %} {% include "car/car_detail_carousel.html" with car_images=car_images %} {% else %}
+    <p>No images available for this car.</p>
     {% endif %}
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        <h1 class="mb-4">{{ car.model_name }} ({{ car.year }})</h1>
-        <div class="card">
-          {% if car_images %}
-            <div id="carCarousel" class="carousel slide" data-bs-ride="carousel">
-              <div class="carousel-inner">
-                {% for image in car_images %}
-                  <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ image.image.url }}" class="d-block w-100" alt="Car image" />
-                  </div>
-                {% endfor %}
-              </div>
-              <button class="carousel-control-prev"
-                      type="button"
-                      data-bs-target="#carCarousel"
-                      data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next"
-                      type="button"
-                      data-bs-target="#carCarousel"
-                      data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-              </button>
-              <div class="row mt-3">
-                {% for image in car_images %}
-                  <div class="col-3">
-                    <img src="{{ image.image.url }}"
-                         class="img-thumbnail"
-                         data-bs-target="#carCarousel"
-                         data-bs-slide-to="{{ forloop.counter0 }}"
-                         alt="Thumbnail">
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-          {% else %}
-            <p>No images available for this car.</p>
-          {% endif %}
-          <div class="card-body">
-            <h5 class="card-title">Price: {{ car.get_price }}</h5>
-            <p class="card-text">
-              <strong>Milage:</strong> {{ car.get_milage }}
-            </p>
-            <p class="card-text">
-              <strong>Description:</strong> {{ car.description }}
-            </p>
-            <p class="card-text">
-              <strong>Fuel Type:</strong> {{ car.get_petrol_type_display }}
-            </p>
-            <p class="card-text">
-              <strong>Car Type:</strong> {{ car.get_car_type_display }}
-            </p>
-            <p class="card-text">
-              <strong>Gear Type:</strong> {{ car.get_gear_type_display }}
-            </p>
-            <p class="card-text">
-              <strong>Created At:</strong> {{ car.created_at }}
-            </p>
-          </div>
-        </div>
+    <h2 class="car_detail_images__title">Vehicle Description</h2>
+    <p>{{ car.description }}</p>
+  </div>
+  <div class="car_detail__info">
+    <h2 class="info_title">{{ car.model_name }}</h2>
+    <h3 class="info_price">Price: {{ car.get_price }}</h3>
+    <div class="info_info">
+      <div>
+        <h4>Milage</h4>
+        <p>{{ car.get_milage }}</p>
+      </div>
+      <div>
+        <h4>Year</h4>
+        <p>{{ car.year }}</p>
+      </div>
+      <div>
+        <h4>Fuel</h4>
+        <p>{{ car.petrol_type }}</p>
+      </div>
+      <div>
+        <h4>Car Type</h4>
+        <p>{{ car.car_type }}</p>
+      </div>
+      <div>
+        <h4>Transmission</h4>
+        <p>{{ car.gear_type }}</p>
       </div>
     </div>
+    <div class="info_buttons">
+      {% if user.is_superuser %}
+      <button class="info_buttons__button" href="{% url 'edit_car' car.id %}">
+        Edit
+      </button>
+      {% endif %} {% include "car/reserve_button.html" with reservation_id=reservation.id car_id=car.id %}
+    </div>
+  </div>
+  <div class="car_detail__similar_cars">
     {% if similar_cars %}
-      <h3 class="section-title">Similar Cars</h3>
-      <div class="row mb-3">
-        {% for similar_car in similar_cars %}
-          <a href="{% url 'car' similar_car.id %}" class="col-md-3 mb-3">
-            <div class="card">
-              {% if similar_car.featured_image %}
-                <img src="{{ similar_car.featured_image.image.url }}"
-                     class="card-img-top"
-                     alt="{{ similar_car.model_name }}" />
-              {% endif %}
-              <div class="card-body">
-                <h5 class="card-title">{{ similar_car.model_name }} ({{ similar_car.year }})</h5>
-                <p class="card-text">Price: {{ similar_car.get_price }}</p>
-              </div>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
+    <h2 class="similar_cars__title">Similar Cars</h2>
+    <div class="similar_cars__items">
+      {% for similar_car in similar_cars %}
+      <a href="{% url 'car' similar_car.id %}" class="items__item">
+        {% if similar_car.featured_image %}
+        <img
+          src="{{ similar_car.featured_image.image.url }}"
+          class="card-img-top"
+          alt="{{ similar_car.model_name }}"
+        />
+        {% endif %}
+        <p>{{ similar_car.get_price }}</p>
+      </a>
+      {% endfor %}
+    </div>
     {% endif %}
   </div>
+</section>
 {% endblock %}

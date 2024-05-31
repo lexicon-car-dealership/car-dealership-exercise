@@ -18,7 +18,7 @@ nav #menu-bar {
   z-index: 999;
   height: 100vh;
   top: 100px;
-  width: 60%;
+  width: 100%;
   right: -100%;
   padding-top: var(--step-spacing);
   display: none;
@@ -74,6 +74,7 @@ nav #menu-bar.active {
   }
   nav #menu-bar {
     display: none;
+    width: 40%;
   }
   #filter_form {
     grid-column: 2 / 6;
