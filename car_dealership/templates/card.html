@@ -1,6 +1,6 @@
 <a href="{{ car.id }}">
   <img class="card-img"
-       src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
+       src="{{ car.featured_image.image.url }}"
        alt="{{ car.model_name }}" />
   <div class="card-body">
     <h2>{{ car.model_name }}</h2>
