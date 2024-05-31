@@ -87,10 +87,13 @@ def index(request):
 
 def get_additional_form_data(form):
     if form == 'manufacturer':
-        return [i.name for i in Manufacturer.objects.all()]
+        return [i.name for i in Manufacturer.objects.all()], None
 
     if form == 'brandmodel':
-        return [i.name for i in BrandModel.objects.all()]
+        brandmodels = [i.name for i in BrandModel.objects.all()]
+        manufacturers = Manufacturer.objects.all()  # corrected to return queryset
+        return brandmodels, manufacturers
+    return [], None
 
 
 def admin_forms(request, form_type):
@@ -123,6 +126,12 @@ def admin_forms(request, form_type):
                 for image in images:
                     CarImages.objects.create(car=car, image=image)
                 messages.success(request, 'Car images uploaded successfully.')
+            elif form_type == 'brandmodel':
+                brand_model = form.save(commit=False)
+                manufacturer = form.cleaned_data['manufacturer']
+                brand_model.manufacturer = manufacturer
+                brand_model.save()
+                messages.success(request, 'Brand Model saved successfully.')
             else:
                 form.save()
                 messages.success(request, f'{form_name} saved successfully.')
@@ -132,8 +141,11 @@ def admin_forms(request, form_type):
                 request, 'Form is not valid. Please check the fields.')
     else:
         form = form_class()
-    data = get_additional_form_data(form_type)
-    return render(request, 'forms/admin_forms.html', {'form': form, 'form_name': form_name, 'data': data})
+    data, manufacturers = get_additional_form_data(form_type)
+    context = {'form': form, 'form_name': form_name, 'data': data}
+    if manufacturers:
+        context['manufacturers'] = manufacturers
+    return render(request, 'forms/admin_forms.html', context)
 
 
 def edit_car(request, car_id):
