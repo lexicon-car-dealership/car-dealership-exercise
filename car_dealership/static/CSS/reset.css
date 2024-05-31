@@ -20,6 +20,12 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
+/* set pixel variables to rem to ease calculation */
+html {
+  --font-size--default: calc((16/16) * 1rem); /* 16px */
+  --font-size--large: calc((28/16) * 1rem); /* 28px */
+}
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -92,10 +98,4 @@ input, textarea, select, button {
 /* Ensure consistent box sizing */
 *, *::before, *::after {
   box-sizing: border-box;
-}
-
-/* Remove default typography styles for headings */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: inherit;
-  line-height: inherit;
 }
