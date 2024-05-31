@@ -38,7 +38,7 @@ nav #menu-bar.active {
 }
 
 #filter_form {
-  margin-top: var(--step-spacing);
+  margin-top: 10px;
 }
 
 .nav-search {
@@ -84,5 +84,6 @@ nav #menu-bar.active {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin-top: 10px;
   }
 }

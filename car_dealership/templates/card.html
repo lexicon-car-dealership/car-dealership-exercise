@@ -3,15 +3,13 @@
        src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
        alt="{{ car.model_name }}" />
   <div class="card-body">
-    <h5 class="card-title">{{ car.model_name }}</h5>
-    <div>
+    <h2>{{ car.model_name }}</h2>
       <p>{{ car.year }} / {{ car.get_milage }} / {{ car.petrol_type }}</p>
-      <div>
+      <div class="card-price">
         <p>Price</p>
         <p>
           <strong>{{ car.get_price }}</strong>
         </p>
       </div>
-    </div>
   </div>
 </a>
