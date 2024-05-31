@@ -1,5 +1,5 @@
 
-from .models import Manufacturer, BrandModel, Car, CarImages
+from .models import Manufacturer, BrandModel, Car, CarImages, Reservation
 from .forms import EditCarForm, ManufacturerForm, BrandModelForm, CarForm, CarImagesForm, AddCarForm
 from django.shortcuts import render, redirect, get_object_or_404
 import os
@@ -7,8 +7,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from . import models
+
 
 def car_detail(request, car_id):
     car = get_object_or_404(
@@ -22,7 +24,10 @@ def car_detail(request, car_id):
         featured_image = similar_car.carimages_set.filter(
             featured=True).first()
         similar_car.featured_image = featured_image
-    return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images, 'similar_cars': similar_cars[:4]})
+    user = request.user
+    if user.is_authenticated:
+        reservation = Reservation.objects.filter(user=user, car=car).first()
+    return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images, 'similar_cars': similar_cars[:4], 'reservation': reservation})
 
 
 def index(request):
@@ -83,9 +88,10 @@ def index(request):
 def get_additional_form_data(form):
     if form == 'manufacturer':
         return [i.name for i in Manufacturer.objects.all()]
-    
+
     if form == 'brandmodel':
         return [i.name for i in BrandModel.objects.all()]
+
 
 def admin_forms(request, form_type):
     form_map = {
@@ -139,16 +145,15 @@ def edit_car(request, car_id):
             car = car_form.save()
             has_featured_image = car.carimages_set.filter(
                 featured=True).exists()
-            
+
             images = request.FILES.getlist('images')
-            for i,image in enumerate(images):
-                if not has_featured_image and i==0:
+            for i, image in enumerate(images):
+                if not has_featured_image and i == 0:
                     models.CarImages.objects.create(
                         car=car, image=image, featured=True)
                 else:
                     models.CarImages.objects.create(
                         car=car, image=image)
-                    
 
             featured_image_id = request.POST.get('featured_image')
             if featured_image_id:
@@ -189,7 +194,8 @@ def add_car(request):
 
             # Handle Images
             for i, image in enumerate(images):
-                CarImages.objects.create(car=car, image=image, featured=True if i == 0 else False)
+                CarImages.objects.create(
+                    car=car, image=image, featured=True if i == 0 else False)
 
             messages.success(request, 'Car added successfully.')
             return redirect('car', car_id=car.id)
@@ -240,3 +246,33 @@ def delete_car_image(request, image_id):
 
     return redirect('edit_car', car_id=car_id)
 
+
+@login_required
+def reserve_car(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    if request.method == 'POST':
+        existing_reservation = Reservation.objects.filter(
+            user=request.user, car=car).exists()
+        if existing_reservation:
+            messages.error(request, 'You have already reserved this car.')
+        else:
+            reservation = Reservation.objects.create(
+                user=request.user, car=car)
+            reservation.save()
+            messages.success(request, 'Car reserved successfully!')
+
+        return redirect('car', car_id=car.id)
+    return redirect('car', car_id=car.id)
+
+
+@login_required
+def cancel_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    if request.method == 'POST':
+        if reservation.user == request.user:
+            reservation.delete()
+            messages.success(request, 'Reservation cancelled successfully!')
+        else:
+            messages.error(
+                request, 'You are not authorized to cancel this reservation.')
+    return redirect(request.META.get('HTTP_REFERER', '/'))
