@@ -33,6 +33,59 @@ def seed_db():
             print(f'Saving {m} {mdl} ...')
 
 
+def fast_seed():
+    fake = Faker()
+    fake.add_provider(VehicleProvider)
+
+    manuf_list = get_manufacturers_names_list()
+    
+    manufacturers = []
+    brand_models = []
+    cars = []
+
+    # Collect manufacturers
+    for m in manuf_list:
+        manufacturers.append(Manufacturer(name=m))
+        print(f'Appending of manufacture {m}')
+
+    # Bulk create manufacturers
+    Manufacturer.objects.bulk_create(manufacturers)
+    print(f'Bulk creation of manufactures done, count = {len(manufacturers)}')
+
+    # Fetch saved manufacturers from DB
+    saved_manufacturers = {mf.name: mf for mf in Manufacturer.objects.all()}
+    print(f'Saved manufactures count  = {len(saved_manufacturers)}')
+    
+
+    # Collect models and cars
+    for m in manuf_list:
+        mf = saved_manufacturers[m]
+        manufacturer_models = get_model_names_by_manufacturer(m)
+        for model in manufacturer_models:
+            mdl = BrandModel(manufacturer=mf, name=model)
+            brand_models.append(mdl)
+
+    # Bulk create brand models
+    BrandModel.objects.bulk_create(brand_models)
+
+    # Fetch saved brand models from DB
+    saved_models = {mdl.name: mdl for mdl in BrandModel.objects.all()}
+    
+
+    # Create cars
+    for mdl in saved_models.values():
+        for _ in range(10):  # Adjust the number of cars per model
+            car_dict = fake.vehicle_object_dict()
+            c = Car(model_name=mdl, **car_dict)
+            cars.append(c)
+            print(f'Appending {mdl} {car_dict["milage"]}')
+
+    # Bulk create cars
+    print('Bulk create cars')
+    Car.objects.bulk_create(cars)
+
+    print('All data has been saved successfully.')
+
 def get_model_names_by_manufacturer(manufacturer):
     newurl = f"https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{manufacturer.split(' ')[0]}?format=json"
     print(newurl)
@@ -46,4 +99,4 @@ def get_manufacturers_names_list():
 
 
 if __name__ == '__main__':
-    seed_db()
+    fast_seed()
