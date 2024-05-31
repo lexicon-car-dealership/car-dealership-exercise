@@ -71,23 +71,25 @@
         </div>
       </div>
     </div>
-    <h3 class="section-title">Similar Cars</h3>
-    <div class="row mb-3">
-      {% for similar_car in similar_cars %}
-        <a href="{% url 'car' similar_car.id %}" class="col-md-3 mb-3">
-          <div class="card">
-            {% if similar_car.featured_image %}
-              <img src="{{ similar_car.featured_image.image.url }}"
-                   class="card-img-top"
-                   alt="{{ similar_car.model_name }}" />
-            {% endif %}
-            <div class="card-body">
-              <h5 class="card-title">{{ similar_car.model_name }} ({{ similar_car.year }})</h5>
-              <p class="card-text">Price: {{ similar_car.get_price }}</p>
+    {% if similar_cars %}
+      <h3 class="section-title">Similar Cars</h3>
+      <div class="row mb-3">
+        {% for similar_car in similar_cars %}
+          <a href="{% url 'car' similar_car.id %}" class="col-md-3 mb-3">
+            <div class="card">
+              {% if similar_car.featured_image %}
+                <img src="{{ similar_car.featured_image.image.url }}"
+                     class="card-img-top"
+                     alt="{{ similar_car.model_name }}" />
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ similar_car.model_name }} ({{ similar_car.year }})</h5>
+                <p class="card-text">Price: {{ similar_car.get_price }}</p>
+              </div>
             </div>
-          </div>
-        </a>
-      {% endfor %}
-    </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 {% endblock %}
