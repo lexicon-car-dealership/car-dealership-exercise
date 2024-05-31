@@ -13,10 +13,16 @@ class Manufacturer(models.Model):
 
 class BrandModel(models.Model):
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return f"{self.manufacturer.name} {self.name}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['manufacturer', 'name'], name='unique_brand_model')
+        ]
 
 
 class Car(models.Model):
