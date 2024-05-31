@@ -23,7 +23,8 @@ time, mark, audio, video {
 /* set pixel variables to rem to ease calculation */
 html {
   --font-size--default: calc((16/16) * 1rem); /* 16px */
-  --font-size--large: calc((28/16) * 1rem); /* 28px */
+  --font-size--xl: calc((28/16) * 1rem); /* 28px */
+  --font-size--l: calc((28/18) * 1rem); /* 18px */
 }
 
 /* HTML5 display-role reset for older browsers */
