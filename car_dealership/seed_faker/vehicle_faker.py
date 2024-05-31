@@ -5,9 +5,18 @@ import faker
 import datetime
 from random import choice, random, randint
 from faker.providers import BaseProvider
-from vehicle_dict import vehicles, PETROL_CHOICES, CAR_TYPE_CHOICES, GEAR_CHOICES
+#from vehicle_dict import vehicles, PETROL_CHOICES, CAR_TYPE_CHOICES, GEAR_CHOICES
 
+PETROL_CHOICES = ['Petrol', 'Diesel', 'Electric', 'Hybrid'
+]
 
+CAR_TYPE_CHOICES = [
+        'Sedan', 'SUV', 'Truck', 'Coupe', 'Convertible', 'Hatchback', 'Van', 'Wagon'
+]
+
+GEAR_CHOICES = [
+        'Manual', 'Automatic'
+]
 class VehicleProvider(BaseProvider):
 
     """
@@ -62,7 +71,7 @@ class VehicleProvider(BaseProvider):
         {'year': 2010, 'manufacturer_name': 'Dodge', 'model_name': 'Ram 1500 Regular Cab', 'car_type': 'Sedan', 'VIN': 'VK1GR2EU7BA555CTA', 'manufacturer_country': 'default country', 'manufacturer_established_date': datetime.date(1999, 10, 10), 'price': 123456, 'vehicle_description': 'Super-duper description', 'petrol_type': 'Hybrid', 'gear_type': 'Manual'}
         """
         
-        fake = faker.Faker()
+        
         veh = {
             #'VIN': fake.vin(),
             'year': randint(1992, 2024),
@@ -72,7 +81,8 @@ class VehicleProvider(BaseProvider):
             'price': VehicleProvider.vehicle_price(),
             'description': VehicleProvider.vehicle_description(),
             'petrol_type': VehicleProvider.vehicle_petrol_type(),
-            'gear_type': VehicleProvider.vehicle_gear_type()
+            'gear_type': VehicleProvider.vehicle_gear_type(),
+            'milage': VehicleProvider.vehicle_milige(),
         }
 
         return veh
@@ -125,3 +135,6 @@ class VehicleProvider(BaseProvider):
 
     def vehicle_gear_type() -> str:
         return choice(GEAR_CHOICES)
+    
+    def vehicle_milige() -> int:
+        return randint(0, 1000000)
