@@ -1,17 +1,15 @@
-<a href="{{ car.id }}" class="card">
-  <img class="card-img-top"
+<a href="{{ car.id }}">
+  <img class="card-img"
        src="{{ car.featured_image.image.url }}"
        alt="{{ car.model_name }}" />
-  <div class="card-body mt-auto">
-    <h5 class="card-title">{{ car.model_name }}</h5>
-    <div>
+  <div class="card-body">
+    <h2>{{ car.model_name }}</h2>
       <p>{{ car.year }} / {{ car.get_milage }} / {{ car.petrol_type }}</p>
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="card-price">
         <p>Price</p>
         <p>
           <strong>{{ car.get_price }}</strong>
         </p>
       </div>
-    </div>
   </div>
 </a>

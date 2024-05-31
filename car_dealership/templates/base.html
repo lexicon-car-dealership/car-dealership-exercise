@@ -10,59 +10,49 @@
     <title>{% block title %}Car Dealership{% endblock %}</title>
   </head>
   <body>
-    <header class="container">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'index' %}">Car Dealership</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-          {% include 'filter.html' with models=models %}
-          <ul class="navbar-nav ms-3 mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
-            </li>
-            {% if user.is_authenticated %}
-                {% if user.is_superuser or user.is_staff %}
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Manage
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                    <li><a class="dropdown-item" href="{% url 'admin_forms' 'manufacturer' %}">Add Manufacturer</a></li>
-                    <li><a class="dropdown-item" href="{% url 'admin_forms' 'brandmodel' %}">Add Brand Model</a></li>
-                    <li><a class="dropdown-item" href="{% url 'add_car' %}">Add Car</a></li>
-                  </ul>
-                </li>
-                {% endif %}
-            {% endif %}
-
-            <!-- Profile Dropdown -->
-            {% if user.is_authenticated %}
-            <li class="nav-item dropdown">
-              <a class="nav-link custom-dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{% static 'images/profile_placeholder.png' %}" alt="Profile" class="rounded-circle profile-picture">
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="dropdown-item">Logout</button>
-                  </form>
-                </li>
-              </ul>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
-            </li>
-            {% endif %}
-          </ul>
-        </div>
+    <header id="header">
+      <nav>
+        <a href="{% url 'index' %}">
+          <img src="{% static 'images/lexicon-logo.png' %}" alt="logo-home">
+        </a>
+        <ul>
+          <!-- Profile Dropdown -->
+          {% if user.is_authenticated %}
+          <li>
+            <button id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <img class="profile-img" src="{% static 'images/profile_placeholder.png' %}" alt="Profile">
+            </button>
+            <ul id="menu-bar" aria-labelledby="navbarDropdown">
+              {% if user.is_superuser or user.is_staff %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Manage
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                  <li><a class="dropdown-item" href="{% url 'admin_forms' 'manufacturer' %}">Add Manufacturer</a></li>
+                  <li><a class="dropdown-item" href="{% url 'admin_forms' 'brandmodel' %}">Add Brand Model</a></li>
+                  <li><a class="dropdown-item" href="{% url 'add_car' %}">Add Car</a></li>
+                </ul>
+              </li>
+              {% endif %}
+              <li><a href="{% url 'profile' %}">Profile</a></li>
+              <hr width="80%">
+              <li>
+                <form method="POST" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button type="submit">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'login' %}">Login</a>
+          </li>
+          {% endif %}
+        </ul>
       </nav>
+      {% include 'filter.html' with models=models %}
     </header>
     <main>
       {% block content %} {% endblock %}
