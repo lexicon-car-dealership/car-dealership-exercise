@@ -18,35 +18,32 @@ document.addEventListener('DOMContentLoaded', function () {
     window.localStorage.setItem('filtertab', isFilterActive);
   });
 });
-  document
-    .getElementById("search-input")
-    .addEventListener("input", function () {
-      const searchQuery = this.value.toLowerCase();
-      const items = document.querySelectorAll("#item-list .list-group-item");
-      let hasResults = false;
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("search-input");
+  const itemList = document.getElementById("item-list");
+  const noResults = document.getElementById("no-results");
+  const hiddenInput = document.getElementById("hidden-input");
 
-      items.forEach((item) => {
-        if (item.textContent.toLowerCase().includes(searchQuery)) {
-          item.style.display = "";
-          hasResults = true;
-        } else {
-          item.style.display = "none";
-        }
-      });
+  searchInput.addEventListener("input", function () {
+    let filter = this.value.toLowerCase();
+    let items = itemList.querySelectorAll(".list-group-item");
+    let found = false;
 
-      document.getElementById("no-results").style.display = hasResults
-        ? "none"
-        : "";
-    });
-
-  document
-    .getElementById("create-new-link")
-    .addEventListener("click", function () {
-      const searchQuery = document.getElementById("search-input").value;
-      const manufacturerNameInput = document.querySelector(
-        '#add-manufacturer-form input[name="name"]'
-      );
-      if (manufacturerNameInput) {
-        manufacturerNameInput.value = searchQuery;
+    items.forEach((item) => {
+      if (item.textContent.toLowerCase().includes(filter)) {
+        item.style.display = "";
+        found = true;
+      } else {
+        item.style.display = "none";
       }
     });
+
+    if (found) {
+      noResults.style.display = "none";
+    } else {
+      hiddenInput.value = this.value;
+      noResults.style.display = "block";
+    }
+  });
+});
+
