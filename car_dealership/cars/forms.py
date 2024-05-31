@@ -26,6 +26,8 @@ class ManufacturerForm(forms.ModelForm):
 
 
 class BrandModelForm(forms.ModelForm):
+    manufacturer = forms.ModelChoiceField(queryset=Manufacturer.objects.all())
+
     class Meta:
         model = BrandModel
         fields = ['manufacturer', 'name']
