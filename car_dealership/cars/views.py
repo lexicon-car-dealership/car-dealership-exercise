@@ -15,6 +15,7 @@ def superuser_required(view_func):
         user_passes_test(lambda u: u.is_superuser)(view_func))
     return decorated_view_func
 
+
 def car_detail(request, car_id):
     # Fetch the car and its related images using prefetch_related for optimization
     car = get_object_or_404(
@@ -99,15 +100,14 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-@superuser_required
-def get_additional_form_data(form):
+def get_additional_form_data(form, user):
     # Return additional data needed for forms based on the form type
     if form == 'manufacturer':
         return [i.name for i in Manufacturer.objects.all()], None
-
+    
     if form == 'brandmodel':
         brandmodels = BrandModel.objects.all()
-        manufacturers = Manufacturer.objects.all()  # corrected to return queryset
+        manufacturers = Manufacturer.objects.all()
         return brandmodels, manufacturers
     return [], None
 
@@ -128,6 +128,7 @@ def admin_forms(request, form_type):
     # Get the form name and form class based on the form type provided
     form_name = form_name_map.get(form_type, 'Admin Form')
     form_class = form_map.get(form_type)
+    user = request.user
     # If the form type is invalid, show an error message and redirect to index
     if not form_class:
         messages.error(request, 'Invalid form type.')
@@ -154,14 +155,13 @@ def admin_forms(request, form_type):
         # Create a new empty form if the request method is GET
         form = form_class()
     # Get additional data required for the form, if any
-    data, manufacturers = get_additional_form_data(form_type)
+    data, manufacturers = get_additional_form_data(form_type, user)
     # Prepare the context for rendering the form template
     context = {'form': form, 'form_name': form_name, 'data': data}
     if manufacturers:
         context['manufacturers'] = manufacturers
     # Render the form template
     return render(request, 'forms/admin_forms.html', context)
-
 
 @superuser_required
 def edit_car(request, car_id):
