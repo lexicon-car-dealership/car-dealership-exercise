@@ -7,6 +7,13 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+
+def superuser_required(view_func):
+    decorated_view_func = login_required(
+        user_passes_test(lambda u: u.is_superuser)(view_func))
+    return decorated_view_func
 
 def car_detail(request, car_id):
     # Fetch the car and its related images using prefetch_related for optimization
@@ -92,6 +99,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 
+@superuser_required
 def get_additional_form_data(form):
     # Return additional data needed for forms based on the form type
     if form == 'manufacturer':
@@ -104,19 +112,18 @@ def get_additional_form_data(form):
     return [], None
 
 
+@superuser_required
 def admin_forms(request, form_type):
     # Map form types to form classes and names
     form_map = {
         'manufacturer': ManufacturerForm,
         'brandmodel': BrandModelForm,
         'car': CarForm,
-        'carimages': CarImagesForm,
     }
     form_name_map = {
         'manufacturer': 'Manufacturer',
         'brandmodel': 'Brand Model',
         'car': 'Add Car',
-        'carimages': 'Car Images',
     }
     # Get the form name and form class based on the form type provided
     form_name = form_name_map.get(form_type, 'Admin Form')
@@ -130,13 +137,7 @@ def admin_forms(request, form_type):
         form = form_class(request.POST, request.FILES)
         if form.is_valid():
             # Handle different form types separately
-            if form_type == 'carimages':
-                car = form.cleaned_data['car']
-                images = form.cleaned_data['image']
-                for image in images:
-                    CarImages.objects.create(car=car, image=image)
-                messages.success(request, 'Car images uploaded successfully.')
-            elif form_type == 'brandmodel':
+            if form_type == 'brandmodel':
                 brand_model = form.save(commit=False)
                 manufacturer = form.cleaned_data['manufacturer']
                 brand_model.manufacturer = manufacturer
@@ -162,6 +163,7 @@ def admin_forms(request, form_type):
     return render(request, 'forms/admin_forms.html', context)
 
 
+@superuser_required
 def edit_car(request, car_id):
     # Get the car object based on the provided car_id
     car = get_object_or_404(Car, id=car_id)
@@ -213,6 +215,7 @@ def edit_car(request, car_id):
     return render(request, 'car/edit_car.html', context)
 
 
+@superuser_required
 def add_car(request):
     # Handle form submission
     if request.method == 'POST':
@@ -242,6 +245,7 @@ def add_car(request):
     return render(request, 'car/add_car.html', {'form': form})
 
 
+@superuser_required
 def delete_car_image(request, image_id):
     # Get the image object based on the provided image_id
     image = get_object_or_404(CarImages, id=image_id)
