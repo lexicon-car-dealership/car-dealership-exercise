@@ -1,7 +1,7 @@
-@import url("reset.css");
-@import url("navbar.css");
-@import url("card.css");
-@import url("forms.css");
+@import url('reset.css');
+@import url('navbar.css');
+@import url('card.css');
+@import url('forms.css');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Platypi:ital,wght@0,300..800;1,300..800&display=swap');
 
 html {
@@ -16,7 +16,8 @@ h2 {
   font-size: var(--font-size--l);
   font-weight: bold;
 }
-input, .form-element {
+input,
+.form-element {
   border-radius: 10px;
   padding: 10px 20px;
   margin-bottom: 10px;
@@ -93,8 +94,13 @@ main {
   height: 20px;
 }
 
+.filter-icon {
+  fill: black;
+}
+
 @media (min-width: 768px) {
-  input, .form-element {
+  input,
+  .form-element {
     margin-right: 10px;
   }
 }
