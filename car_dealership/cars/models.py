@@ -1,6 +1,7 @@
 import os
 from django.db import models
 import locale
+from django.contrib.auth.models import User
 
 
 class Manufacturer(models.Model):
@@ -52,7 +53,7 @@ class Car(models.Model):
         max_length=12, choices=CAR_TYPE_CHOICES, default='Sedan')
     gear_type = models.CharField(
         max_length=10, choices=GEAR_CHOICES, default='Manual')
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     milage = models.IntegerField(default=0)
 
     def get_price(self):
@@ -83,3 +84,12 @@ class CarImages(models.Model):
 
     def __str__(self):
         return f'{self.car.model_name.name} | image | {self.featured}'
+
+
+class Reservation(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reservation_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reservation for {self.car} by {self.user} on {self.reservation_date}"
