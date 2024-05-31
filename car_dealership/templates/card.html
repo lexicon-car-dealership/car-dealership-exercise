@@ -1,7 +1,11 @@
+{% load static %}
 <a class="card" href="{{ car.id }}">
-  <img class="card-img"
-       src="{{ car.featured_image.image.url }}"
-       alt="{{ car.model_name }}" />
+    {% if car.image %}
+        <img src="{{ car.image.url }}" alt="{{ car.model_name }}" class="card-img">
+    {% else %}
+        <img src="{% static 'images/car-placeholder.jpg' %}" alt="Placeholder Image" class="card-img">
+    {% endif %}
+
   <div class="card-body">
     <h2>{{ car.model_name }}</h2>
     <p>{{ car.year }} / {{ car.get_milage }} / {{ car.petrol_type }}</p>

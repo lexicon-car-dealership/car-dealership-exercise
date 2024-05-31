@@ -22,9 +22,12 @@ time, mark, audio, video {
 
 /* set pixel variables to rem to ease calculation */
 html {
-  --font-size--default: calc((16/16) * 1rem); /* 16px */
-  --font-size--xl: calc((28/16) * 1rem); /* 28px */
-  --font-size--l: calc((28/18) * 1rem); /* 18px */
+  --font-size--default: calc((16/16) * 1rem);
+  /* 16px */
+  --font-size--xl: calc((28/16) * 1rem);
+  /* 28px */
+  --font-size--l: calc((28/18) * 1rem);
+  /* 18px */
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -65,12 +68,18 @@ img {
 
 /* Remove default button styling */
 button, input, optgroup, select, textarea {
-  font-family: inherit; /* Inherit font-family for form elements */
-  font-size: inherit; /* Inherit font-size for form elements */
-  line-height: inherit; /* Inherit line-height for form elements */
-  margin: 0; /* Reset margin for form elements */
-  padding: 0; /* Reset padding for form elements */
-  color: inherit; /* Inherit color for form elements */
+  font-family: inherit;
+  /* Inherit font-family for form elements */
+  font-size: inherit;
+  /* Inherit font-size for form elements */
+  line-height: inherit;
+  /* Inherit line-height for form elements */
+  margin: 0;
+  /* Reset margin for form elements */
+  padding: 0;
+  /* Reset padding for form elements */
+  color: inherit;
+  /* Inherit color for form elements */
 }
 
 button {
@@ -99,4 +108,44 @@ input, textarea, select, button {
 /* Ensure consistent box sizing */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  /* Center the pagination */
+  margin-top: 2rem;
+}
+
+.pagination-list {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination-item {
+  margin: 0 0.5rem;
+}
+
+.pagination-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #4d4d4e;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  background-color: #fff;
+}
+
+.pagination-item.disabled .pagination-link {
+  color: #6c757d;
+  pointer-events: none;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.pagination-item.active .pagination-link {
+  color: #6c757d;
+  border-color: #808182;
 }
