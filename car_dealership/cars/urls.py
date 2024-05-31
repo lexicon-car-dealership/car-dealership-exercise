@@ -9,5 +9,6 @@ urlpatterns = [
     path('car/delete_image/<int:image_id>/',
          views.delete_car_image, name='delete_car_image'),
     path('add_car/', views.add_car, name='add_car'),
-
+    path('reserve/<int:car_id>/', views.reserve_car, name='reserve_car'),
+    path('cancel-reservation/<int:reservation_id>/', views.cancel_reservation, name='cancel_reservation'),
 ]
