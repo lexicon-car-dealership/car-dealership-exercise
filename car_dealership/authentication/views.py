@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegisterForm, EditProfileForm
-from cars.views import index
-from django.contrib import messages
+from cars.models import Reservation
 
 def register(request):
     if request.method == 'POST':
@@ -54,9 +53,11 @@ def profile_view(request, profile_id=None):
                 return JsonResponse({'success': False, 'errors': errors})
         else:
             form = EditProfileForm(instance=user, user=user)
+    reservations = Reservation.objects.filter(user=user).all()
 
-    return render(request, 'profile.html', {'form': form, 'user': user, 'current_user': request.user})
+    return render(request, 'profile.html', {'form': form, 'user': user, 'current_user': request.user, 'reservations': reservations})
 
 def logout_view(request):
     logout(request)
     return redirect('index')
+
