@@ -90,7 +90,7 @@ def get_additional_form_data(form):
         return [i.name for i in Manufacturer.objects.all()], None
 
     if form == 'brandmodel':
-        brandmodels = [i.name for i in BrandModel.objects.all()]
+        brandmodels = BrandModel.objects.all()
         manufacturers = Manufacturer.objects.all()  # corrected to return queryset
         return brandmodels, manufacturers
     return [], None
