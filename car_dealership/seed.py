@@ -46,24 +46,24 @@ def fast_seed():
     # Collect manufacturers
     for m in manuf_list:
         manufacturers.append(Manufacturer(name=m))
+        print(f'Appending of manufacture {m}')
 
     # Bulk create manufacturers
     Manufacturer.objects.bulk_create(manufacturers)
+    print(f'Bulk creation of manufactures done, count = {len(manufacturers)}')
 
     # Fetch saved manufacturers from DB
     saved_manufacturers = {mf.name: mf for mf in Manufacturer.objects.all()}
-    print(f'Saved manufactures = {saved_manufacturers}')
+    print(f'Saved manufactures count  = {len(saved_manufacturers)}')
+    
 
     # Collect models and cars
     for m in manuf_list:
         mf = saved_manufacturers[m]
         manufacturer_models = get_model_names_by_manufacturer(m)
         for model in manufacturer_models:
-            # Use get_or_create to ensure uniqueness
-            mdl, created = BrandModel.objects.get_or_create(manufacturer=mf, name=model)
-            if created:
-                brand_models.append(mdl)
-
+            mdl = BrandModel(manufacturer=mf, name=model)
+            brand_models.append(mdl)
 
     # Bulk create brand models
     BrandModel.objects.bulk_create(brand_models)

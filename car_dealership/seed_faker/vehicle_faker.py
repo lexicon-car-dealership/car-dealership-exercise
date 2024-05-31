@@ -1,9 +1,9 @@
 #from pathlib import Path
 #print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 
-import faker
+#import faker
 import datetime
-from random import choice, random, randint
+from random import choice, randint
 from faker.providers import BaseProvider
 #from vehicle_dict import vehicles, PETROL_CHOICES, CAR_TYPE_CHOICES, GEAR_CHOICES
 
