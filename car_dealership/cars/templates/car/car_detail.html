@@ -9,6 +9,17 @@
       <div class="col-md-8 offset-md-2">
         <h1 class="mb-4">{{ car.model_name }} ({{ car.year }})</h1>
         <div class="card">
+          {% if reservation %}
+            <form action="{% url 'cancel_reservation' reservation.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn button-primary">Delete Reservation</button>
+            </form>
+          {% else %}
+            <form action="{% url 'reserve_car' car.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn button-primary">Reserve Car</button>
+            </form>
+          {% endif %}
           {% if car_images %}
             <div id="carCarousel" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner">
@@ -39,7 +50,7 @@
                          class="img-thumbnail"
                          data-bs-target="#carCarousel"
                          data-bs-slide-to="{{ forloop.counter0 }}"
-                         alt="Thumbnail">
+                         alt="Thumbnail" />
                   </div>
                 {% endfor %}
               </div>

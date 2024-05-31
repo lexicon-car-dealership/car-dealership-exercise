@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
+    {% include 'filter.html' with models=models %}
     <h1>Used Cars for Sale</h1>
     <p>
         Discover a wide selection of used cars from various brands available for purchase, either through auction or at a fixed price. While many of these cars are in excellent condition, some may require minor repairs. Each vehicle has been thoroughly tested, with the results detailed in the respective advertisement.
     </p>
     <section class="cars-selection">
-            {% for car in cars %}
-                <div class="card">{% include 'card.html' with car=car %}</div>
-            {% endfor %}
+        {% for car in cars %}
+            {% include 'card.html' with car=car %}
+        {% endfor %}
     </section>
     <div class="container mt-5">
         <nav aria-label="Page navigation">
