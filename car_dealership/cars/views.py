@@ -203,6 +203,7 @@ def edit_car(request, car_id):
         car_form = EditCarForm(instance=car)
     # Get all images of the car
     car_images = car.carimages_set.all()
+    # Prepare the context for rendering the form template
     context = {
         'car_form': car_form,
         'car_images': car_images,
