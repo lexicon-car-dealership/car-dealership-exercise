@@ -25,6 +25,7 @@ def car_detail(request, car_id):
             featured=True).first()
         similar_car.featured_image = featured_image
     user = request.user
+    reservation = None
     if user.is_authenticated:
         reservation = Reservation.objects.filter(user=user, car=car).first()
     return render(request, 'car/car_detail.html', {'car': car, 'car_images': car_images, 'similar_cars': similar_cars[:4], 'reservation': reservation})
