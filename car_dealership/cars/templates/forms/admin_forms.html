@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container mt-3">
-  <h2>Current items in {{ form_name }}</h2>
+  <h2>Add {{ form_name }}</h2>
 
-  <input type="text" id="search-input" name="name" class="form-control mt-2" placeholder="Search {{ form_name|lower }}...">
+  <input type="text" id="search-input" name="name" class="form-control mt-2" placeholder="Add your {{ form_name|lower }}...">
 
   <ul class="list-group overflow-auto mt-2" id="item-list" style="max-height: 400px">
     {% for item in data %}
