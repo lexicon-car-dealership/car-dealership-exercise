@@ -9,7 +9,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #fff
+  color: #fff;
 }
 
 nav #menu-bar {
@@ -39,28 +39,39 @@ nav #menu-bar.active {
 }
 
 #filter_form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-top: 10px;
 }
 
 .nav-search {
   display: flex;
   align-items: center;
-  gap: var(--step-spacing);
-}
+  gap: 20px;
 
-.nav-search>input {
-  width: 100%;
+  input {
+    width: 100%;
+    margin: 0;
+  }
 }
 
 .nav-search-filters {
   display: none;
 }
+
 .nav-search-filters.active {
   display: flex;
   flex-direction: column;
 }
+
 .nav-search-filters label {
-  visibility: hidden;
+  display: none;
+}
+
+.nav-search-filters .form-element {
+  min-width: 0px;
+  flex-grow: 1;
 }
 
 @media (min-width: 768px) {

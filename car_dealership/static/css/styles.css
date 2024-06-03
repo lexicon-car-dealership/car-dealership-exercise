@@ -42,7 +42,6 @@ main {
   justify-content: center;
 }
 
-
 .form-control {
   border-radius: 0.25rem;
 }
@@ -66,10 +65,33 @@ main {
   fill: black;
 }
 
-@media (min-width: 768px) {
+.index-header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 40px 0;
 
+  h1 {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  p {
+    font-weight: normal;
+    line-height: 1.5;
+  }
+}
+
+.profile_container {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
   input,
   .form-element {
     margin-right: 10px;
+  }
+  .profile_container {
+    max-width: 80%;
   }
 }
