@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
   <div class="register_form">
     <h2>Login</h2>
-    <form class='register_form__form' method="POST">
+    <form class="register_form__form" method="post">
       {% csrf_token %}
       <div class="form-group">
         <label for="id_username">Username:</label>
@@ -26,4 +26,4 @@
       </div>
     </form>
   </div>
-{% endblock %}
+{% endblock content %}
