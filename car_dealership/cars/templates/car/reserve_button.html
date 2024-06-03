@@ -11,5 +11,7 @@
     </form>
   {% endif %}
 {% else %}
-  <p>Please log in to reserve a car.</p>
+  <p>
+    Please <span style="color: blue"><a href="{% url 'login' %}">log in</a></span> to reserve a car.
+  </p>
 {% endif %}
