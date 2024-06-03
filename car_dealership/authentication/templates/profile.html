@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container mt-5">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center profile_container">
             <div class="col-md-8">
                 <legend class="border-bottom mb-4 text-center">User Details</legend>
                 <ul class="list-group mb-4">
@@ -51,29 +51,31 @@
                     </div>
                 {% endif %}
             </div>
-            <div>
-                <h2>Reservations</h2>
-                <ul class="list-group mb-4">
-                    {% for reservation in reservations %}
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h5>{{ reservation.car.model_name }}</h5>
-                                    <p class="text-muted">{{ reservation.car.year }}</p>
+            {% if reservations %}
+                <div>
+                    <h2>Reservations</h2>
+                    <ul class="list-group mb-4">
+                        {% for reservation in reservations %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>{{ reservation.car.model_name }}</h5>
+                                        <p class="text-muted">{{ reservation.car.year }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>{{ reservation.user.username }}</h5>
+                                        <p class="text-muted">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</p>
+                                        <form action="{% url 'cancel_reservation' reservation.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Remove</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <h5>{{ reservation.user.username }}</h5>
-                                    <p class="text-muted">{{ reservation.user.first_name }} {{ reservation.user.last_name }}</p>
-                                    <form action="{% url 'cancel_reservation' reservation.id %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Remove</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
     <!-- Modal -->

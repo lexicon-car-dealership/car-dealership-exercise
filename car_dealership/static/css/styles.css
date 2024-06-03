@@ -82,9 +82,16 @@ main {
   }
 }
 
+.profile_container {
+  width: 100%;
+}
+
 @media (min-width: 768px) {
   input,
   .form-element {
     margin-right: 10px;
+  }
+  .profile_container {
+    max-width: 80%;
   }
 }
