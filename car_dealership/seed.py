@@ -1,15 +1,15 @@
+import json
+import urllib.request
+from seed_faker.vehicle_faker import VehicleProvider
+from faker import Faker
+from cars.models import Car, BrandModel, Manufacturer
+import django
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'car_dealership.settings')
 
-import django
-print('lol')
+print('Seeding process started ..')
 django.setup()
 
-from cars.models import Car, BrandModel, Manufacturer
-from faker import Faker
-from seed_faker.vehicle_faker import VehicleProvider
-import urllib.request
-import json
 
 def seed_db():
     fake = Faker()
@@ -19,7 +19,7 @@ def seed_db():
 
     for m in manuf_list:
         mf = Manufacturer(name=m)
-        
+
         mf.save()
         manufacturer_models = get_model_names_by_manufacturer(m)
         for model in manufacturer_models:
@@ -37,16 +37,17 @@ def fast_seed():
     fake = Faker()
     fake.add_provider(VehicleProvider)
 
-    manuf_list = get_manufacturers_names_list()
-    
+    manuf_list = list(get_manufacturers_names_list())
+
     manufacturers = []
     brand_models = []
     cars = []
 
     # Collect manufacturers
     for m in manuf_list:
-        manufacturers.append(Manufacturer(name=m))
-        print(f'Appending of manufacture {m}')
+        manufacturer, created = Manufacturer.objects.get_or_create(name=m)
+        if created:
+            manufacturers.append(manufacturer)
 
     # Bulk create manufacturers
     Manufacturer.objects.bulk_create(manufacturers)
@@ -55,7 +56,6 @@ def fast_seed():
     # Fetch saved manufacturers from DB
     saved_manufacturers = {mf.name: mf for mf in Manufacturer.objects.all()}
     print(f'Saved manufactures count  = {len(saved_manufacturers)}')
-    
 
     # Collect models and cars
     for m in manuf_list:
@@ -70,21 +70,23 @@ def fast_seed():
 
     # Fetch saved brand models from DB
     saved_models = {mdl.name: mdl for mdl in BrandModel.objects.all()}
-    
 
     # Create cars
-    for mdl in saved_models.values():
-        for _ in range(10):  # Adjust the number of cars per model
+    for i, mdl in enumerate(saved_models.values()):
+        if i >= 100:
+            break
+        for _ in range(1):  # Adjust the number of cars per model
             car_dict = fake.vehicle_object_dict()
             c = Car(model_name=mdl, **car_dict)
             cars.append(c)
-            print(f'Appending {mdl} {car_dict["milage"]}')
+            print(f'Appending {mdl}')
 
     # Bulk create cars
     print('Bulk create cars')
     Car.objects.bulk_create(cars)
 
     print('All data has been saved successfully.')
+
 
 def get_model_names_by_manufacturer(manufacturer):
     newurl = f"https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{manufacturer.split(' ')[0]}?format=json"
